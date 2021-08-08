@@ -1,0 +1,36 @@
+{
+	"comp/bo": [
+		"comp/bo/Button.ls",
+		"comp/bo/Checkbox.ls",
+		"comp/bo/DateTime.ls",
+		"comp/bo/Icon.ls",
+		"comp/bo/InputGroup.ls",
+		"comp/bo/Menu.ls",
+		"comp/bo/PasswordInput.ls",
+		"comp/bo/Popover.ls",
+		"comp/bo/Radio.ls",
+		"comp/bo/Select.ls",
+		"comp/bo/Switch.ls",
+		"comp/bo/Table.ls",
+		"comp/bo/Tabs.ls",
+		"comp/bo/TextInput.ls",
+		"comp/bo/Tooltip.ls"
+	],
+	"comp/ma": [
+		"comp/ma/Task.ls"
+	],
+	"C/apps": [
+		"C/apps/Map",
+		"C/apps/Textarea"
+	],
+	"C": [
+		"C/apps",
+		"C/apps/Map",
+		"C/apps/Map/app.ls",
+		"C/apps/Map/app.styl",
+		"C/apps/Map/app.yml",
+		"C/apps/Textarea",
+		"C/apps/Textarea/app.ls",
+		"C/apps/Textarea/app.yml"
+	]
+}

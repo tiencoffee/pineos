@@ -1,0 +1,765 @@
+box-orient()
+	-webkit-box-orient arguments
+	box-orient arguments
+font-smoothing()
+	-webkit-font-smoothing arguments
+	font-smoothing arguments
+line-clamp()
+	-webkit-line-clamp arguments
+	line-clamp arguments
+text-security()
+	-webkit-text-security arguments
+	text-security arguments
+user-drag()
+	-webkit-user-drag arguments
+	user-drag arguments
+user-modify()
+	-webkit-user-modify arguments
+	user-modify arguments
+text-truncate(line)
+	if line < 2
+		text-overflow ellipsis
+		white-space nowrap
+		overflow hidden
+	else
+		display -webkit-box
+		line-clamp line
+		box-orient vertical
+		overflow hidden
+
+$colors = {
+	red: {
+		bg: #db3737
+		border: #a82a2a
+		hover: #c23030
+		active: #a82a2a
+		basicHover: #fae1e1
+		basicActive: #f4c3c3
+	}
+	yellow: {
+		bg: #d9822b
+		border: #a66321
+		hover: #bf7326
+		active: #a66321
+		basicHover: #f9ecdf
+		basicActive: #f4d9bf
+	}
+	green: {
+		bg: #0f9960
+		border: #0a6640
+		hover: #0d8050
+		active: #0a6640
+		basicHover: #dbf0e7
+		basicActive: #b7e0cf
+	}
+	blue: {
+		bg: #137cbd
+		border: #0e5a8a
+		hover: #106ba3
+		active: #0e5a8a
+		basicHover: #dcebf5
+		basicActive: #b8d7eb
+	}
+}
+
+@import "https://fonts.googleapis.com/css?family=IBM+Plex+Sans:,b"
+@import "https://cdn.jsdelivr.net/gh/tiencoffee/libs/font-awesome/all.min.css"
+
+*, *:before, *:after
+	box-sizing border-box
+	vertical-align middle
+:focus
+	outline 0
+::-webkit-scrollbar
+	appearance none
+	width 14px
+	height 14px
+	background #fff
+::-webkit-scrollbar-thumb
+	border-radius 6px
+	background #8a9ba8
+	&:hover
+		background #738694
+	&:active
+		background #394b59
+body
+	position absolute
+	inset 0
+	margin 0
+	font 16px "IBM Plex Sans",sans-serif
+	color #182026
+	overflow hidden
+	line-height 1.35
+	word-break break-word
+	user-select none
+img, a
+	user-drag none
+small
+	font-size small
+h1, h2, h3, h4, h5, h6, p
+	margin 8px 0
+h1
+	font-size 35px
+h2
+	font-size 28px
+h3
+	font-size 22px
+h4
+	font-size 18px
+h5
+	font-size 16px
+h6
+	font-size 13px
+pre
+	margin 16px 0
+blockquote
+	margin 16px 0
+	padding-left 16px
+	border-left solid 4px #8a9ba8
+ul
+	list-style-type square
+code
+	padding 2px 4px
+	border-radius 6px
+	font-size 13px
+	color #5c7080
+	box-shadow 0 0 0 1px #bfccd6
+kbd
+	padding 2px 4px
+	border-radius 6px
+	font-size 13px
+	background #394b59
+	color #fff
+	box-shadow 0 2px #182026
+input[type=number]
+	&::-webkit-inner-spin-button
+		appearance none
+
+#appEl
+	position absolute
+	inset 0
+
+.Icon
+	display inline-flex
+	justify-content center
+	align-items center
+	box-sizing content-box
+.Icon--img
+	height 18px
+	min-width 18px
+	min-height 18px
+	object-fit scale-down
+.Icon--blank
+	width 18px
+	height 18px
+
+.Button
+	height 30px
+	padding 0 4px
+	border solid 1px
+	border-radius 6px
+	display inline-flex
+	justify-content center
+	align-items center
+	font inherit
+	&:not(.Button--basic)
+		border-color #bfccd6
+		background #f5f8fa
+		&:hover
+			background #ebf1f5
+		&.active
+		&:active
+			background #d8e1e8
+.Button--basic
+	border-color #0000
+	background #0000
+	&:hover
+		background #ebf1f5
+	&.active
+	&:active
+		background #d8e1e8
+for name, color in $colors
+	.Button--{name}
+		&:not(.Button--basic)
+			border-color: color.border
+			background: color.bg
+			color #fff
+			&:hover
+				background: color.hover
+			&.active
+			&:active
+				background: color.active
+		&.Button--basic
+			color: color.bg
+			&:hover
+				background: color.basicHover
+			&.active
+			&:active
+				background: color.basicActive
+.Button--small
+	height 24px
+	padding 0 2px
+.Button--onlyIcon
+	width 32px
+	&.Button--small
+		width 30px
+.Button__icon
+	padding 0 4px
+.Button__text
+	padding 0 4px
+	flex-grow 1
+
+.TextInput
+	position relative
+	width 200px
+	height 30px
+	padding 0 4px
+	border solid 1px #bfccd6
+	border-radius 6px
+	display inline-flex
+	justify-content center
+	align-items center
+	background #fff
+	transition-property border-color,box-shadow
+	transition-duration .1s
+	&:focus-within
+		border-color #137cbd
+		border-radius 6px
+		box-shadow 0 0 0 2px #137cbd88
+		z-index 1
+.TextInput__icon
+	padding 0 4px
+.TextInput__input
+	width 0
+	height 100%
+	padding 0 4px
+	border 0
+	flex-grow 1
+	font inherit
+.TextInput__element
+	height 100%
+	display flex
+	justify-content center
+	align-items center
+.TextInput__leftElement
+	margin-left -4px
+.TextInput__rightElement
+	margin-right -4px
+
+.PasswordInput--isHidePassword
+	> .TextInput__input
+		text-security square
+
+.Checkbox
+.Radio
+	height 30px
+	display inline-flex
+	align-items center
+.Checkbox__content:hover .Checkbox__input
+.Radio:not(.Radio--checked) .Radio__content:hover .Radio__input
+	background #ebf1f5
+.Checkbox__content:active .Checkbox__input
+.Radio:not(.Radio--checked) .Radio__content:active .Radio__input
+	background #d8e1e8
+.Checkbox--checked .Checkbox__input
+.Radio--checked .Radio__input
+	border-color #0e5a8a
+	background #137cbd
+.Checkbox--checked .Checkbox__content:hover .Checkbox__input
+	background #106ba3
+.Checkbox--checked .Checkbox__content:active .Checkbox__input
+	background #0e5a8a
+.Checkbox__content
+.Radio__content
+	display flex
+	align-items center
+.Checkbox__input
+.Radio__input
+	width 20px
+	height 20px
+	border solid 1px #bfccd6
+	border-radius 6px
+	display flex
+	justify-content center
+	align-items center
+	background #f5f8fa
+.Radio__input
+	border-radius 30px
+.Checkbox__check
+	font-size 13px
+	color #fff
+.Radio__check
+	width 10px
+	height 10px
+	border-radius 30px
+	background #fff
+.Checkbox__label
+.Radio__label
+	margin-left 8px
+.Checkbox__hidden
+.Radio__hidden
+	display none
+
+.Switch
+	height 30px
+	display inline-flex
+	align-items center
+.Switch--checked
+	.Switch__content
+		&:hover
+			.Switch__input
+				background #106ba3
+		&:active
+			.Switch__input
+				background #0e5a8a
+	.Switch__input
+		background #137cbd
+		.Switch__thumb
+			left calc(100% - 19px)
+			border-color #0e5a8a
+.Switch__content
+	display flex
+	align-items center
+	&:hover
+		.Switch__input
+			background #ced9e0
+	&:active
+		.Switch__input
+			background #bfccd6
+.Switch__input
+	position relative
+	width 36px
+	height 20px
+	border-radius 30px
+	background #d8e1e8
+	transition-property border-color,background
+	transition-duration .1s
+.Switch__thumb
+	position absolute
+	left 1px
+	top 1px
+	width 18px
+	height 18px
+	border solid 1px #a7b6c2
+	border-radius 30px
+	background #fff
+	transition left .1s
+.Switch__hidden
+	display none
+
+.Select
+	position relative
+	width 200px
+	height 30px
+	padding 0 4px
+	border solid 1px
+	border-radius 6px
+	display inline-flex
+	justify-content center
+	align-items center
+	font inherit
+	&:not(.Select--basic)
+		border-color #bfccd6
+		background #f5f8fa
+		&:hover
+			background #ebf1f5
+		&.active
+		&:active
+			background #d8e1e8
+.Select--basic
+	border-color #0000
+	background #0000
+	&:hover
+		background #ebf1f5
+	&.active
+	&:active
+		background #d8e1e8
+.Select__icon
+	max-width 18px
+	min-width 18px
+	padding 0 4px
+.Select__text
+	padding 0 4px
+	flex-grow 1
+	text-truncate 1
+.Select__arrow
+	padding 0 4px
+.Select__popper
+	width 100%
+	border solid 1px #bfccd6
+	border-radius 6px
+	background #fff
+	overflow hidden
+	box-shadow 0 3px 8px #29374233
+.Select__items
+	height 100%
+	padding 4px 0
+	overflow-y auto
+	scroll-padding 4px 0
+.Select__item
+	min-height 30px
+	display flex
+	align-items center
+	padding 0 4px
+	&.hover
+		background #ebf1f5
+	&:active
+		background #d8e1e8
+.Select__itemIcon
+	max-width 18px
+	min-width 18px
+	padding 0 4px
+	display flex
+	justify-content center
+.Select__itemText
+	padding 0 4px
+	flex-grow 1
+.Select__divider
+	border-top solid 1px #bfccd6
+	margin 4px 0
+
+.InputGroup
+	display inline-flex
+	> *
+		border-radius 0
+		margin-left -1px
+		&:first-child
+			margin-left 0
+			border-top-left-radius 6px
+			border-bottom-left-radius 6px
+		&:last-child
+			border-top-right-radius 6px
+			border-bottom-right-radius 6px
+
+.Menu
+	min-width 150px
+	max-width 400px
+	padding 4px 0
+	border solid 1px #bfccd6
+	border-radius 8px
+	display inline-block
+	background #fff
+.Menu--basic
+	border 0
+.Menu__item
+	min-height 30px
+	padding 0 8px
+	display flex
+	align-items center
+	&:hover
+	&.Menu__item--submenuShown
+		background #ebf1f5
+	&:not(.Menu__item--hasItems)
+		&:active
+			background #bfccd6
+for name, color in $colors
+	.Menu__item--{name}
+		color: color.bg
+		&:hover
+		&.Menu__item--submenuShown
+			background: color.bg
+			color #fff
+			> .Menu__itemLabel
+				color #bfccd6
+		&:not(.Menu__item--hasItems)
+			&:active
+				background: color.active
+				color #fff
+				> .Menu__itemLabel
+					color #bfccd6
+.Menu__itemIcon
+	max-width 28px
+	min-width 28px
+	display flex
+	justify-content center
+.Menu__itemText
+	padding 0 8px
+	flex-grow 1
+.Menu__itemLabel
+	padding 0 8px 0 16px
+	font-size 13px
+	display flex
+	justify-content flex-end
+	color #738694
+	white-space nowrap
+.Menu__divider
+	border-top solid 1px #bfccd6
+	margin 4px 0
+.Menu__popper
+	z-index 5
+.Menu__submenu
+	box-shadow 0 3px 8px #29374233
+
+.Table
+	border-radius 8px
+	border-collapse collapse
+	display inline-block
+	background #fff
+	overflow auto
+	tr
+		height 30px
+	th
+		text-align left
+	td, th
+		padding 0 8px
+.Table--hasHeader
+	tr:first-child
+		position sticky
+		top 0
+		background #fff
+		box-shadow 0 2px #bfccd6
+.Table--bordered
+	tr
+		border-bottom solid 1px #bfccd6
+		&:last-child
+			border-bottom 0
+	td, th
+		border-right solid 1px #bfccd6
+		&:last-child
+			border-right 0
+.Table--striped
+	tr:nth-child(even)
+		background #f5f8fa
+.Table--interactive
+	&.Table--hasHeader tr + tr
+	&:not(.Table--hasHeader) tr
+		&:hover
+			background #ebf1f5
+		&.active
+		&:active
+			background #d8e1e8
+.Table__content
+	width 100%
+	display table
+
+.DateTime
+	padding 8px
+	border solid 1px #bfccd6
+	border-radius 6px
+	display inline-flex
+	flex-direction column
+.DateTime__header
+	padding-bottom 8px
+	border-bottom solid 1px #bfccd6
+	display flex
+.DateTime__month
+.DateTime__year
+	flex-grow 1
+.DateTime__weekdays
+	display flex
+	font-weight 700
+.DateTime__weekday
+	height 30px
+	display flex
+	flex-grow 1
+	justify-content center
+	align-items center
+.DateTime__days
+	display grid
+	grid-template-columns repeat(7,1fr)
+	grid-auto-rows 30px
+.DateTime__day
+	border-radius 6px
+	display flex
+	justify-content center
+	align-items center
+	color #a7b6c2
+	&:hover
+		background #ebf1f5
+	&.active
+	&:active
+		background #d8e1e8
+.DateTime__day--isInMonth
+	color unset
+.DateTime__day--today
+	box-shadow 0 0 0 1px inset #bfccd6
+.DateTime__day--selected
+	background #137cbd
+	color #fff
+	&:hover
+		background #106ba3
+	&.DateTime__day--today
+		box-shadow 0 0 0 1px inset #0e5a8a
+.DateTime__times
+	display flex
+	justify-content center
+
+.Tabs__tabs
+	position relative
+	display flex
+	column-gap 16px
+	align-items center
+.Tabs__tab
+	height 30px
+	display flex
+	align-items center
+	&.active
+		color #137cbd
+.Tabs__indicator
+	position absolute
+	left 0
+	top 0
+	border-top solid 3px #137cbd
+.Tabs__panel
+	position relative
+
+.Popover__popper
+	border solid 1px #bfccd6
+	border-radius 8px
+	background #fff
+	box-shadow 0 3px 8px #29374233
+	pointer-events auto
+
+#portalsEl
+	z-index 4
+
+((text))
+
+.full
+	position absolute
+	left 0
+	top 0
+	width 100%
+	height 100%
+
+.row
+	display flex
+.column
+	display flex
+	flex-direction column
+.wrap
+	flex-wrap wrap
+.col
+	flex 1
+.col-0
+	flex auto
+for i in 1..12
+	val = round(i / 12 * 100%, 5)
+	.col-{i}
+		width val
+
+for k, val in (start flex-start) (center center) (end flex-end)
+	.{k}.row
+		justify-content val
+	.{k}.column
+		align-items val
+for k, val in (top flex-start) (center center) (bottom flex-end)
+	.{k}.row
+		align-items val
+	.{k}.column
+		justify-content val
+.between
+	justify-content space-between
+.around
+	justify-content space-around
+.evenly
+	justify-content space-evenly
+.stretch
+	align-items stretch
+
+for pos in absolute relative fixed
+	.{pos}
+		position pos
+for dis in block inline-block inline flex inline-flex grid inline-grid table inline-table
+	.{dis}
+		display dis
+.hidden, [hidden]
+	display none
+
+props = {m: margin, p: padding}
+sides = {
+	"": ("")
+	x: ("-left" "-right")
+	y: ("-top" "-bottom")
+	l: ("-left")
+	r: ("-right")
+	t: ("-top")
+	b: ("-bottom")
+}
+sizes = 0 2px 4px 8px 16px 24px
+for p, prop in props
+	for s, side in sides
+		for size, z in sizes
+			.{p}{s}-{z}
+				for side2 in side
+					{prop}{side2} size
+			if p is "m" and z
+				.-m{s}-{z}
+					for side2 in side
+						margin{side2} -(size)
+		if p is "m"
+			.m{s}-auto
+				for side2 in side
+					margin{side2} auto
+
+for size in 0 25 50 75 100
+	.w-{size}
+		width (size)%
+	.h-{size}
+		height (size)%
+
+for align in left center right justify
+	.text-{align}
+		text-align align
+for whs in nowrap pre pre-wrap
+	.text-{whs}
+		white-space whs
+.text-truncate
+	text-truncate 1
+.text-small
+	font-size small
+.text-bold
+	font-weight bold
+.text-italic
+	font-style italic
+.text-mono
+	font-family monospace
+.text-lower
+	text-transform lowercase
+.text-upper
+	text-transform uppercase
+.text-decoration-none
+	text-decoration none
+.text-h1
+	font-size 35px
+.text-h2
+	font-size 28px
+.text-h3
+	font-size 22px
+.text-h4
+	font-size 18px
+.text-h5
+	font-size 16px
+.text-h6
+	font-size 13px
+
+.list-unstyled
+	list-style none
+
+.scroll
+	overflow auto
+.scroll-hidden
+	overflow hidden
+
+.bg-light
+	background #f5f8fa
+.bg-gray
+	background #8a9ba8
+.bg-dark
+	background #182026
+.text-light
+	color #f5f8fa
+.text-gray
+	color #8a9ba8
+.text-dark
+	color #182026
+for name, color in $colors
+	.bg-{name}
+		background-color: color.bg
+	.text-{name}
+		color: color.bg
+
+.disabled
+	color unset
+	opacity .5
+	pointer-events none
