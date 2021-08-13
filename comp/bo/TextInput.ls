@@ -3,9 +3,13 @@ m.TextInput = m.comp do
 		@controlled = @attrs.controlled ? \value of @attrs
 		@value = if @controlled => @attrs.value else @attrs.defaultValue
 		@isOnchange = no
-		@inputEl = void
+		@input = void
+
+	oncreate: !->
+		@attrs.ref? @
 
 	onbeforeupdate: (old, first) !->
+		@attrs.rounded ?= yes
 		if @isOnchange
 			@isOnchange = no
 			if @attrs.value isnt @value
@@ -14,38 +18,49 @@ m.TextInput = m.comp do
 			if @attrs.value isnt old.value
 				@value = @attrs.value
 
+	oninputInput: (event) !->
+		if not @controlled or @attrs.onchange
+			@value = event.target.value
+		@attrs.oninput? event
+
+	onchangeInput: (event) !->
+		@isOnchange = yes
+		unless @controlled
+			@value = event.target.value
+		@attrs.onchange? event
+
 	oncontextmenuInput: (event) !->
 		m.openContextMenu event,
 			* text: "Hoàn tác"
 				icon: \undo
 				label: "Ctrl+Z"
 				onclick: !~>
-					@inputEl.focus!
+					@input.dom.focus!
 					document.execCommand \undo
 			* text: "Làm lại"
 				icon: \redo
 				label: "Ctrl+Shift+Z"
 				onclick: !~>
-					@inputEl.focus!
+					@input.dom.focus!
 					document.execCommand \redo
 			,,
 			* text: "Cắt"
 				icon: \cut
 				label: "Ctrl+X"
 				onclick: !~>
-					@inputEl.focus!
+					@input.dom.focus!
 					document.execCommand \cut
 			* text: "Sao chép"
 				icon: \copy
 				label: "Ctrl+C"
 				onclick: !~>
-					@inputEl.focus!
+					@input.dom.focus!
 					document.execCommand \copy
 			* text: "Dán"
 				icon: \clipboard
 				label: "Ctrl+V"
 				onclick: !~>
-					@inputEl.focus!
+					@input.dom.focus!
 					if tid
 						text = await send \readClipboard
 					else
@@ -57,6 +72,8 @@ m.TextInput = m.comp do
 		m \.TextInput,
 			class: m.class do
 				"disabled": @attrs.disabled
+				"TextInput--basic": @attrs.basic
+				"TextInput--rounded": @attrs.rounded
 				@attrs.class
 			style: m.style do
 				width: @attrs.width
@@ -70,6 +87,8 @@ m.TextInput = m.comp do
 						class: "TextInput__icon TextInput__leftIcon"
 						name: @attrs.icon
 			m \input.TextInput__input,
+				style: m.style do
+					textAlign: @attrs.align
 				type: @attrs.type
 				disabled: @attrs.disabled
 				min: @attrs.min
@@ -81,19 +100,12 @@ m.TextInput = m.comp do
 				required: @attrs.required
 				readOnly: @attrs.readOnly
 				value: @value
-				oncreate: (vnode) !~>
-					@inputEl = vnode.dom
-					@attrs.inputRef? @inputEl
-				oninput: (event) !~>
-					if not @controlled or @attrs.onchange
-						@value = event.target.value
-					@attrs.oninput? event
-				onchange: (event) !~>
-					unless @controlled
-						@value = event.target.value
-					@isOnchange = yes
-					@attrs.onchange? event
+				oninput: @oninputInput
+				onchange: @onchangeInput
+				onfocus: @attrs.onfocus
+				onblur: @attrs.onblur
 				oncontextmenu: @oncontextmenuInput
+				oncreate: (@input) !~>
 			if @attrs.rightElement or @attrs.rightIcon
 				if @attrs.rightElement
 					m \.TextInput__element.TextInput__rightElement,

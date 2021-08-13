@@ -12,6 +12,8 @@ props =
 	loadedLibs:
 		"dayjs@1.10.6": yes
 		"dayjs@1.10.6/locale/vi.js": yes
+		"dayjs@1.10.6/plugin/localeData.js": yes
+		"dayjs@1.10.6/plugin/customParseFormat.js": yes
 
 mainMethods =
 	indent: (code, lv) ->
@@ -195,8 +197,48 @@ m.App = m.comp do
 		@isOpen1 = no
 		@isOpen2 = yes
 		@colors = <[red yellow green blue]>
-		@dateTimeVal = "2021/10/20T15:52:04"
+		@dateTimeVal = "2021-10-20T15:52:04"
+		@dateTimeInputVal = "2021-10-30T10:35:48"
 		@tabId = \about
+		@menubarItems =
+			* text: "Tập tin"
+				items:
+					* text: "Mở tập tin..."
+						label: \Ctrl+O
+					* text: "Lưu"
+						label: \Ctrl+S
+					,,
+					* text: "Thoát"
+			* text: "Sửa"
+				items:
+					* text: "Cắt"
+						label: \Ctrl+X
+					* text: "Sao chép"
+						label: \Ctrl+C
+					* text: "Dán"
+						label: \Ctrl+V
+					,,
+					* text: "Chọn tất cả"
+						label: \Ctrl+A
+			* text: "Hiển thị"
+				items:
+					* text: "Tùy chọn hiển thị"
+						items:
+							* text: "Toàn màn hình"
+								label: \F11
+							,,
+							* text: "Hiển thị thanh menu"
+							* text: "Hiển thị bảng điều khiển"
+							,,
+							* text: "Phóng to"
+								label: \Ctrl+Shift+-
+							* text: "Thu nhỏ"
+								label: \Ctrl+Shift+=
+							* text: "Đặt lại thu phóng"
+								label: \Ctrl+Numpad0
+			* text: "Trợ giúp"
+				items:
+					* text: "Kiểm tra cập nhật..."
 		@menuItems =
 			* text: "Chọn"
 				color: \blue
@@ -219,6 +261,8 @@ m.App = m.comp do
 			,,
 			* text: "Văn bản"
 				items:
+					* text: "Làm đậm"
+						icon: \bold
 					* text: "Căn chỉnh"
 						items:
 							* text: "Trái"
@@ -227,8 +271,6 @@ m.App = m.comp do
 								icon: \align-center
 							* text: "Phải"
 								icon: \align-right
-					* text: "Làm đậm"
-						icon: \bold
 			* text: "Gửi"
 				color: \green
 				icon: \share
@@ -349,6 +391,8 @@ m.App = m.comp do
 
 	view: ->
 		m \.App,
+			m m.Menubar,
+				items: @menubarItems
 			m \.h-100.p-4.scroll,
 				m \p Date.now!
 				m m.Button,
@@ -386,11 +430,14 @@ m.App = m.comp do
 					timePrecision: \millisecond
 					value: @dateTimeVal
 					onvalue: (@dateTimeVal) !~>
-				m \span @dateTimeVal + ""
+				m \span @dateTimeVal
 				m m.Button,
 					onclick: !~>
-						@dateTimeVal = new Date!toJSON!
-					"Đặt ngày h.tại"
+						setTimeout !~>
+							@dateTimeVal = new Date!toJSON!
+							m.redraw!
+						, 3000
+					"Đặt dateTimeVal sau 3s"
 				m m.Tabs,
 					tabId: @tabId
 					ontabidchange: (tabId) !~>
@@ -476,6 +523,17 @@ m.App = m.comp do
 							m \li "Trà sữa"
 							m \li "Trà bí đao"
 					m \li "Sữa chua"
+				m m.DateTimeInput,
+					value: @dateTimeInputVal
+					onvalue: (@dateTimeInputVal) !~>
+				m \span @dateTimeInputVal
+				m m.Button,
+					onclick: !~>
+						setTimeout !~>
+							@dateTimeInputVal = new Date!toJSON!
+							m.redraw!
+						, 3000
+					"Đặt dateTimeInputVal sau 3s"
 				m m.Select,
 					items: @selectItems
 				m m.Select,

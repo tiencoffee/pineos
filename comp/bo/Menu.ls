@@ -5,7 +5,20 @@ m.Menu = m.comp do
 		@timo = void
 		@isRoot = not @attrs.root
 		@root = @attrs.root or @
+
+	onbeforeupdate: !->
+		@items = @getItems @attrs.items
+
+	getItems: (items) ->
+		items = [...m.castArray items]
+		for item in items
+			if item?items
+				item.items = @getItems item.items
+		items
+
+	updateItems: !->
 		@items = [...m.castArray @attrs.items]
+		handle = (items) !~>
 		for item in @items
 			if item?
 				item.items and= m.castArray item.items
@@ -36,7 +49,7 @@ m.Menu = m.comp do
 				, 250
 
 	onmouseleaveItem: (item, event) !->
-		if @timo or @item and not @item.items
+		if @timo or (@item and not @item.items)
 			@close!
 
 	onclickItem: (item, event) !->

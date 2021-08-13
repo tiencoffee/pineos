@@ -3,27 +3,51 @@ m.DateTime = m.comp do
 		@controlled = @attrs.controlled ? \value of @attrs
 		@today = dayjs!
 		@day = dayjs if @controlled => @attrs.value else @attrs.defaultValue
-		@updateDay!
-		@updateFormat!
+		@setDay if @controlled => @attrs.value else @attrs.defaultValue
+		@updateTimePrecision!
+		@monthSelect = void
+		@yearSelect = void
+
+	oncreate: !->
+		@attrs.ref? @
 
 	onbeforeupdate: (old) !->
+		@attrs.highlightToday ?= yes
 		if @attrs.value isnt old.value
-			@day = dayjs @attrs.value
-			@updateDay!
+			@setDay @attrs.value
+		if !!@attrs.fixedWeekCount isnt !!old.fixedWeekCount
+			@updateDays!
 		if @attrs.timePrecision isnt old.timePrecision
-			@updateFormat!
+			@updateTimePrecision!
 
-	updateDay: !->
+	setDay: (day) !->
+		day = dayjs day unless day instanceof dayjs
+		if day.isValid!
+			@day = day
+		else
+			@day ?= dayjs!
+		@updateDays!
+		year = @day.year!
+		minYear = year - 20
+		minYear = 1000 if minYear < 1000
+		maxYear = year + 20
+		maxYear = 9999 if maxYear > 9999
+		@yearItems = [minYear to maxYear]
+
+	updateDays: !->
+		{fixedWeekCount} = @attrs
 		@days = []
 		day = @day.date 1 .day 0
+		month = @day.month!
 		n = 0
-		while n < 28 or day.month! is @day.month! or day.day!
+		while (fixedWeekCount and n < 42)
+		or (not fixedWeekCount and (n < 28 or day.month! is month or day.day!))
 			@days.push day
 			day .= add 1 \d
 			n++
 
-	updateFormat: !->
-		@format = switch @attrs.timePrecision
+	updateTimePrecision: !->
+		@outputFormat = switch @attrs.timePrecision
 			| \minute => \YYYY-MM-DDTHH:mm
 			| \second => \YYYY-MM-DDTHH:mm:ss
 			| \millisecond => \YYYY-MM-DDTHH:mm:ss.SSS
@@ -31,51 +55,46 @@ m.DateTime = m.comp do
 
 	onclickPrev: (event) !->
 		day = @day.subtract 1 \M
+		value = day.format @outputFormat
 		unless @controlled
-			@day = day
-			@updateDay!
-		value = day.format @format
+			@setDay day
 		@attrs.onvalue? value
 
 	onclickNext: (event) !->
 		day = @day.add 1 \M
+		value = day.format @outputFormat
 		unless @controlled
-			@day = day
-			@updateDay!
-		value = day.format @format
+			@setDay day
 		@attrs.onvalue? value
 
 	onitemselectMonth: (item, index) !->
 		day = @day.month index
+		value = day.format @outputFormat
 		unless @controlled
-			@day = day
-			@updateDay!
-		value = day.format @format
+			@setDay day
 		@attrs.onvalue? value
 
 	onitemselectYear: (item) !->
 		day = @day.year item.value
+		value = day.format @outputFormat
 		unless @controlled
-			@day = day
-			@updateDay!
-		value = day.format @format
+			@setDay day
 		@attrs.onvalue? value
 
 	onclickDay: (day) !->
+		value = day.format @outputFormat
 		unless @controlled
-			@day = day
-			@updateDay!
-		value = day.format @format
+			@setDay day
 		@attrs.onvalue? value
+		@attrs.onclickday? day.clone!
 
-	onchangeHour: (event) !->
-		hour = Math.floor event.target.value
-		if 0 <= hour <= 23
-			day = @day.hour hour
+	onchangeTime: (type, event) !->
+		val = Math.floor event.target.value
+		if event.target.min <= val <= event.target.max
+			day = @day[type] val
+			value = day.format @outputFormat
 			unless @controlled
-				@day = day
-				@updateDay!
-			value = day.format @format
+				@setDay day
 			@attrs.onvalue? value
 
 	view: ->
@@ -94,13 +113,15 @@ m.DateTime = m.comp do
 					items: [0 to 11]map ~>
 						text: "Tháng #{it + 1}"
 						value: it
+					ref: (@monthSelect) !~>
 					onitemselect: @onitemselectMonth
 				m m.Select,
 					class: \DateTime__year
 					basic: yes
 					width: 85
 					value: @day.year!
-					items: [@day.year! - 20 to @day.year! + 20]
+					items: @yearItems
+					ref: (@yearSelect) !~>
 					onitemselect: @onitemselectYear
 				m m.Button,
 					class: \DateTime__next
@@ -120,21 +141,61 @@ m.DateTime = m.comp do
 					m \.DateTime__day,
 						class: m.class do
 							"DateTime__day--isInMonth": day.month! is @day.month!
-							"DateTime__day--today": day.isSame @today, \d
+							"DateTime__day--today": @attrs.highlightToday and day.isSame @today, \d
 							"DateTime__day--selected": day.isSame @day, \d
 						onclick: (event) !~>
 							@onclickDay day
 						day.date!
 			if @attrs.timePrecision
 				m \.DateTime__times,
-					m m.InputGroup,
-						m m.TextInput,
-							class: \DateTime__hour
-							type: \number
-							basic: yes
-							width: 40
-							min: 0
-							max: 23
-							required: yes
-							value: @day.hour!
-							onchange: @onchangeHour
+					m m.TextInput,
+						type: \number
+						basic: yes
+						width: 40
+						align: \center
+						min: 0
+						max: 23
+						required: yes
+						value: @day.hour!
+						onchange: (event) !~>
+							@onchangeTime \hour event
+					m \.DateTime__separator \:
+					m m.TextInput,
+						type: \number
+						basic: yes
+						width: 40
+						align: \center
+						min: 0
+						max: 59
+						required: yes
+						value: @day.minute!
+						onchange: (event) !~>
+							@onchangeTime \minute event
+					if @attrs.timePrecision isnt \minute
+						m.fragment do
+							m \.DateTime__separator \:
+							m m.TextInput,
+								type: \number
+								basic: yes
+								width: 40
+								align: \center
+								min: 0
+								max: 59
+								required: yes
+								value: @day.second!
+								onchange: (event) !~>
+									@onchangeTime \second event
+					if @attrs.timePrecision is \millisecond
+						m.fragment do
+							m \.DateTime__separator \.
+							m m.TextInput,
+								type: \number
+								basic: yes
+								width: 50
+								align: \center
+								min: 0
+								max: 999
+								required: yes
+								value: @day.millisecond!
+								onchange: (event) !~>
+									@onchangeTime \millisecond event

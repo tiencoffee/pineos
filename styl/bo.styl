@@ -62,7 +62,7 @@ $colors = {
 	}
 }
 
-@import "https://fonts.googleapis.com/css?family=IBM+Plex+Sans:,b"
+@import "https://fonts.googleapis.com/css?family=Ropa+Sans:,b|Roboto:,b"
 @import "https://cdn.jsdelivr.net/gh/tiencoffee/libs/font-awesome/all.min.css"
 
 *, *:before, *:after
@@ -86,7 +86,7 @@ body
 	position absolute
 	inset 0
 	margin 0
-	font 16px "IBM Plex Sans",sans-serif
+	font 16px "Ropa Sans","Roboto",sans-serif
 	color #182026
 	overflow hidden
 	line-height 1.35
@@ -157,7 +157,7 @@ input[type=number]
 	height 30px
 	padding 0 4px
 	border solid 1px
-	border-radius 6px
+	border-radius 0
 	display inline-flex
 	justify-content center
 	align-items center
@@ -199,6 +199,8 @@ for name, color in $colors
 .Button--small
 	height 24px
 	padding 0 2px
+.Button--rounded
+	border-radius 6px
 .Button--onlyIcon
 	width 32px
 	&.Button--small
@@ -215,7 +217,7 @@ for name, color in $colors
 	height 30px
 	padding 0 4px
 	border solid 1px #bfccd6
-	border-radius 6px
+	border-radius 0
 	display inline-flex
 	justify-content center
 	align-items center
@@ -227,6 +229,12 @@ for name, color in $colors
 		border-radius 6px
 		box-shadow 0 0 0 2px #137cbd88
 		z-index 1
+.TextInput--basic
+	border 0
+	&:focus-within
+		box-shadow 0 0 0 3px #137cbd88,0 0 0 1px #137cbd
+.TextInput--rounded
+	border-radius 6px
 .TextInput__icon
 	padding 0 4px
 .TextInput__input
@@ -234,8 +242,10 @@ for name, color in $colors
 	height 100%
 	padding 0 4px
 	border 0
+	border-radius 0
 	flex-grow 1
 	font inherit
+	background #0000
 .TextInput__element
 	height 100%
 	display flex
@@ -420,6 +430,8 @@ for name, color in $colors
 
 .InputGroup
 	display inline-flex
+	justify-content center
+	align-items center
 	> *
 		border-radius 0
 		margin-left -1px
@@ -430,8 +442,15 @@ for name, color in $colors
 		&:last-child
 			border-top-right-radius 6px
 			border-bottom-right-radius 6px
+.InputGroup--left
+	justify-content flex-start
+.InputGroup--center
+	justify-content center
+.InputGroup--right
+	justify-content flex-end
 
 .Menu
+	width max-content
 	min-width 150px
 	max-width 400px
 	padding 4px 0
@@ -490,6 +509,9 @@ for name, color in $colors
 .Menu__submenu
 	box-shadow 0 3px 8px #29374233
 
+.Menubar
+	border-bottom solid 1px #bfccd6
+
 .Table
 	border-radius 8px
 	border-collapse collapse
@@ -538,6 +560,7 @@ for name, color in $colors
 	border-radius 6px
 	display inline-flex
 	flex-direction column
+	background #fff
 .DateTime__header
 	padding-bottom 8px
 	border-bottom solid 1px #bfccd6
@@ -546,12 +569,13 @@ for name, color in $colors
 .DateTime__year
 	flex-grow 1
 .DateTime__weekdays
+	margin-top 8px
 	display flex
 	font-weight 700
 .DateTime__weekday
 	height 30px
 	display flex
-	flex-grow 1
+	flex 1
 	justify-content center
 	align-items center
 .DateTime__days
@@ -566,7 +590,6 @@ for name, color in $colors
 	color #a7b6c2
 	&:hover
 		background #ebf1f5
-	&.active
 	&:active
 		background #d8e1e8
 .DateTime__day--isInMonth
@@ -577,12 +600,24 @@ for name, color in $colors
 	background #137cbd
 	color #fff
 	&:hover
+	&:active
 		background #106ba3
 	&.DateTime__day--today
 		box-shadow 0 0 0 1px inset #0e5a8a
 .DateTime__times
-	display flex
+	margin-top 8px
+	border solid 1px #bfccd6
+	border-radius 6px
+	display inline-flex
 	justify-content center
+	align-items center
+	align-self center
+.DateTime__separator
+	padding 0 4px
+
+.DateTimeInput__popper
+	border-radius 6px
+	box-shadow 0 3px 8px #29374233
 
 .Tabs__tabs
 	position relative
@@ -604,6 +639,7 @@ for name, color in $colors
 	position relative
 
 .Popover__popper
+	width max-content
 	border solid 1px #bfccd6
 	border-radius 8px
 	background #fff

@@ -29,6 +29,8 @@ await do !->
 		loadedLibs:
 			"dayjs@1.10.6": yes
 			"dayjs@1.10.6/locale/vi.js": yes
+			"dayjs@1.10.6/plugin/localeData.js": yes
+			"dayjs@1.10.6/plugin/customParseFormat.js": yes
 
 	ifrmMethods =
 		openContextMenu: (event, ...items) !->

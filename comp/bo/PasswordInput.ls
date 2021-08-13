@@ -2,27 +2,34 @@ m.PasswordInput = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@isHidePassword = yes
-		@inputEl
+		@input = void
+
+	oncreate: !->
+		@attrs.ref? @
+
+	onclickToggleHidePassword: (event) !->
+		@input.input.dom.focus!
+		not= @isHidePassword
 
 	oncontextmenu: (event) !->
 		m.openContextMenu event,
 			* text: @isHidePassword and "Hiện mật khẩu" or "Ẩn mật khẩu"
 				icon: @isHidePassword and \eye or \eye-slash
 				onclick: !~>
-					@inputEl.focus!
+					@input.input.dom.focus!
 					not= @isHidePassword
 			,,
 			* text: "Hoàn tác"
 				icon: \undo
 				label: "Ctrl+Z"
 				onclick: !~>
-					@inputEl.focus!
+					@input.input.dom.focus!
 					document.execCommand \undo
 			* text: "Làm lại"
 				icon: \redo
 				label: "Ctrl+Shift+Z"
 				onclick: !~>
-					@inputEl.focus!
+					@input.input.dom.focus!
 					document.execCommand \redo
 			,,
 			* text: "Cắt"
@@ -30,20 +37,20 @@ m.PasswordInput = m.comp do
 				label: "Ctrl+X"
 				disabled: @isHidePassword
 				onclick: !~>
-					@inputEl.focus!
+					@input.input.dom.focus!
 					document.execCommand \cut
 			* text: "Sao chép"
 				icon: \copy
 				label: "Ctrl+C"
 				disabled: @isHidePassword
 				onclick: !~>
-					@inputEl.focus!
+					@input.input.dom.focus!
 					document.execCommand \copy
 			* text: "Dán"
 				icon: \clipboard
 				label: "Ctrl+V"
 				onclick: !~>
-					@inputEl.focus!
+					@input.input.dom.focus!
 					if tid
 						text = await send \readClipboard
 					else
@@ -53,11 +60,12 @@ m.PasswordInput = m.comp do
 
 	view: ->
 		m m.TextInput,
-			class: m.class do
+			class:
 				"PasswordInput--isHidePassword": @isHidePassword
 				"PasswordInput"
 				@attrs.class
 			controlled: @controlled
+			basic: @attrs.basic
 			disabled: @attrs.disabled
 			min: @attrs.min
 			max: @attrs.max
@@ -73,17 +81,13 @@ m.PasswordInput = m.comp do
 			rightIcon: @attrs.rightIcon
 			oninput: @attrs.oninput
 			oncontextmenu: @oncontextmenu
-			inputRef: (@inputEl) !~>
+			ref: (@input) !~>
 			element: @attrs.element
 			rightElement:
 				m m.Tooltip,
 					content: @isHidePassword and "Hiện mật khẩu" or "Ẩn mật khẩu"
 					m m.Button,
-						style:
-							marginRight: 2
 						basic: yes
 						small: yes
 						icon: @isHidePassword and \eye or \eye-slash
-						onclick: !~>
-							@inputEl.focus!
-							not= @isHidePassword
+						onclick: @onclickToggleHidePassword

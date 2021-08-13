@@ -1,3 +1,7 @@
+dayjs.locale \vi
+dayjs.extend dayjs_plugin_localeData
+dayjs.extend dayjs_plugin_customParseFormat
+
 m <<<
 	uidVal: 0
 

@@ -1,6 +1,7 @@
 m.Button = m.comp do
 	onbeforeupdate: !->
 		@attrs.type = \button
+		@attrs.rounded ?= yes
 
 	view: ->
 		m \button.Button,
@@ -9,6 +10,7 @@ m.Button = m.comp do
 				"disabled": @attrs.disabled
 				"Button--basic": @attrs.basic
 				"Button--small": @attrs.small
+				"Button--rounded": @attrs.rounded
 				"Button--onlyIcon": (@attrs.icon xor @attrs.rightIcon) and not @attrs.children.length
 				"Button--#{@attrs.color}": @attrs.color
 				@attrs.class
@@ -19,6 +21,7 @@ m.Button = m.comp do
 			type: @attrs.type
 			disabled: @attrs.disabled
 			onclick: @attrs.onclick
+			onmousedown: @attrs.onmousedown
 			onmouseenter: @attrs.onmouseenter
 			onmouseleave: @attrs.onmouseleave
 			if @attrs.icon

@@ -2,24 +2,19 @@ m.Select = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@value = if @controlled => @attrs.value else @attrs.defaultValue
-		@isOpen = no
 		@item = void
 		@popper = void
 		@popperEl = void
 		@indeterminate = no
-		@willUpdate = yes
 		@updateItems!
+
+	oncreate: !->
+		@attrs.ref? @
 
 	onbeforeupdate: (old, first) !->
 		if @attrs.value isnt old.value
 			@value = @attrs.value
-			@willUpdate = yes
 			@updateItems!
-
-	onupdate: !->
-		if @willUpdate
-			@willUpdate = no
-			@updateIsOpen!
 
 	updateItems: !->
 		@hasIcons = no
@@ -46,13 +41,15 @@ m.Select = m.comp do
 			@item or= @items.0
 			@indeterminate = yes
 
-	updateIsOpen: !->
-		if @isOpen
+	togglePopper: (isOpen) !->
+		if isOpen
 			unless @popper
 				@updateItems!
 				@hoverItem = @item
 				@popperEl = document.createElement \div
-				@popperEl.className = \Select__popper
+				@popperEl.className = m.class do
+					@attrs.portalClass
+					"Select__popper"
 				comp =
 					view: ~>
 						m \.Select__items,
@@ -85,7 +82,7 @@ m.Select = m.comp do
 				if @item
 					if itemEl = @popperEl.querySelector \.hover
 						itemEl.scrollIntoView do
-							block: \nearest
+							block: \center
 				m.redraw!
 		else
 			if @popper
@@ -99,8 +96,7 @@ m.Select = m.comp do
 				m.redraw!
 
 	onclick: (event) !->
-		not= @isOpen
-		@updateIsOpen!
+		@togglePopper not @popper
 
 	onclickItem: (item, index, event) !->
 		value = @value
@@ -110,17 +106,14 @@ m.Select = m.comp do
 		if @indeterminate or value isnt item.value
 			@attrs.onvalue? item.value
 			@attrs.onitemselect? item, index
-		@isOpen = no
-		@updateIsOpen!
+		@togglePopper no
 
 	onmousedownGlobal: (event) !->
 		unless @dom.contains event.target or @popperEl.contains event.target
-			@isOpen = no
-			@updateIsOpen!
+			@togglePopper no
 
 	onremove: !->
-		@isOpen = no
-		@updateIsOpen!
+		@togglePopper no
 
 	view: ->
 		m \.Select,
