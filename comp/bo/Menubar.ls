@@ -10,7 +10,7 @@ m.Menubar = m.comp do
 		items
 
 	view: ->
-		m \.Menubar,
+		m \nav.Menubar,
 			@items.map (item) ~>
 				m m.Popover,
 					position: \bottom-start

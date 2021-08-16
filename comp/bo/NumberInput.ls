@@ -1,23 +1,44 @@
-m.PasswordInput = m.comp do
+m.NumberInput = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
-		@isHidePassword = yes
+		@timoSpin = void
+		@intvSpin = void
 		@input = void
 
-	oncreate: !->
-		@attrs.ref? @
-
-	onclickToggleHidePassword: (event) !->
+	step: (val) !->
 		@input.input.dom.focus!
-		not= @isHidePassword
+		@input.input.dom.stepUp val
+		evt = new InputEvent \input
+		@input.input.dom.dispatchEvent evt
+		evt = new InputEvent \change
+		@input.input.dom.dispatchEvent evt
+
+	onpointerdownSpin: (val, event) !->
+		event.target.setPointerCapture event.pointerId
+		@step val
+		@timoSpin = setTimeout !~>
+			@step val
+			@intvSpin = setInterval !~>
+				@step val
+			, 100
+		, 300
+
+	onlostpointercaptureSpin: (event) !->
+		clearTimeout @timoSpin
+		clearInterval @intvSpin
 
 	oncontextmenu: (event) !->
 		m.openContextMenu event,
-			* text: @isHidePassword and "Hiện mật khẩu" or "Ẩn mật khẩu"
-				icon: @isHidePassword and \eye or \eye-slash
+			* text: "Tăng lên"
+				icon: \chevron-up
+				label: "ArrowUp"
 				onclick: !~>
-					@input.input.dom.focus!
-					not= @isHidePassword
+					@step 1
+			* text: "Giảm xuống"
+				icon: \chevron-down
+				label: "ArrowDown"
+				onclick: !~>
+					@step -1
 			,,
 			* text: "Hoàn tác"
 				icon: \undo
@@ -35,14 +56,12 @@ m.PasswordInput = m.comp do
 			* text: "Cắt"
 				icon: \cut
 				label: "Ctrl+X"
-				disabled: @isHidePassword
 				onclick: !~>
 					@input.input.dom.focus!
 					document.execCommand \cut
 			* text: "Sao chép"
 				icon: \copy
 				label: "Ctrl+C"
-				disabled: @isHidePassword
 				onclick: !~>
 					@input.input.dom.focus!
 					document.execCommand \copy
@@ -64,18 +83,21 @@ m.PasswordInput = m.comp do
 					@input.dom.select!
 		@attrs.oncontextmenu? event
 
+	onremove: !->
+		clearTimeout @timoSpin
+		clearInterval @intvSpin
+
 	view: ->
 		m m.TextInput,
 			class:
-				"PasswordInput--isHidePassword": @isHidePassword
-				"PasswordInput"
-				@attrs.class
+				"NumberInput"
 			controlled: @controlled
+			type: \number
 			basic: @attrs.basic
 			disabled: @attrs.disabled
-			minLength: @attrs.minLength
-			maxLength: @attrs.maxLength
-			pattern: @attrs.pattern
+			min: @attrs.min
+			max: @attrs.max
+			step: @attrs.step
 			required: @attrs.required
 			readOnly: @attrs.readOnly
 			defaultValue: @attrs.defaultValue
@@ -86,14 +108,19 @@ m.PasswordInput = m.comp do
 			oninput: @attrs.oninput
 			onchange: @attrs.onchange
 			oncontextmenu: @oncontextmenu
-			element: @attrs.element
 			rightElement:
-				m m.Tooltip,
-					content: @isHidePassword and "Hiện mật khẩu" or "Ẩn mật khẩu"
+				m \.NumberInput__spins,
 					m m.Button,
-						style:
-							marginRight: 2
+						class: "NumberInput__spin NumberInput__spinUp"
 						basic: yes
-						small: yes
-						icon: @isHidePassword and \eye or \eye-slash
-						onclick: @onclickToggleHidePassword
+						icon: \chevron-up
+						onpointerdown: (event) !~>
+							@onpointerdownSpin 1 event
+						onlostpointercapture: @onlostpointercaptureSpin
+					m m.Button,
+						class: "NumberInput__spin NumberInput__spinDown"
+						basic: yes
+						icon: \chevron-down
+						onpointerdown: (event) !~>
+							@onpointerdownSpin -1 event
+						onlostpointercapture: @onlostpointercaptureSpin

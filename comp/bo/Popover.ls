@@ -66,6 +66,8 @@ m.Popover = m.comp do
 		if @willUpdateIsOpen
 			@willUpdateIsOpen = no
 			@updateIsOpen!
+		if @popper
+			@popper.update!
 
 	updateIsOpen: !->
 		if @isOpen

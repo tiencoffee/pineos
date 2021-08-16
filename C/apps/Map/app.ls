@@ -2,4 +2,4 @@ m.App = m.comp do
 	view: ->
 		m \.full,
 			m \iframe.__map,
-				src: \https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C51.47612752641776%2C0.00030577182769775396%2C51.478569861898606&layer=mapnik
+				src: "https://www.openstreetmap.org/export/embed.html?bbox=105.55,21.08,106.1,21.08&layer=mapnik"

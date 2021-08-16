@@ -7,6 +7,6 @@
 	"settings": {},
 	"build_systems": [{
 		"name": "Build",
-		"shell_cmd": "taskkill -f -im node.exe & lsc $folder/build"
+		"shell_cmd": "taskkill -f -im node.exe & cd $folder && lsc build && live-server -q --host=localhost --port=5500 --no-browser"
 	}]
 }

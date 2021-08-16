@@ -2,7 +2,6 @@ m.DateTime = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@today = dayjs!
-		@day = dayjs if @controlled => @attrs.value else @attrs.defaultValue
 		@setDay if @controlled => @attrs.value else @attrs.defaultValue
 		@updateTimePrecision!
 		@monthSelect = void

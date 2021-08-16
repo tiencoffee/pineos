@@ -61,8 +61,10 @@ $colors = {
 		basicActive: #b8d7eb
 	}
 }
+$sans = unquote("Ropa Sans,Roboto,sans-serif")
+$mono = unquote("JetBrains Mono,monospace")
 
-@import "https://fonts.googleapis.com/css?family=Ropa+Sans:,b|Roboto:,b"
+@import "https://fonts.googleapis.com/css?family=Ropa+Sans:,b|Roboto:,b|JetBrains+Mono:,b"
 @import "https://cdn.jsdelivr.net/gh/tiencoffee/libs/font-awesome/all.min.css"
 
 *, *:before, *:after
@@ -74,9 +76,8 @@ $colors = {
 	appearance none
 	width 14px
 	height 14px
-	background #fff
+	background #e1e8ed
 ::-webkit-scrollbar-thumb
-	border-radius 6px
 	background #8a9ba8
 	&:hover
 		background #738694
@@ -86,7 +87,7 @@ body
 	position absolute
 	inset 0
 	margin 0
-	font 16px "Ropa Sans","Roboto",sans-serif
+	font 16px $sans
 	color #182026
 	overflow hidden
 	line-height 1.35
@@ -112,6 +113,7 @@ h6
 	font-size 13px
 pre
 	margin 16px 0
+	font-family $mono
 blockquote
 	margin 16px 0
 	padding-left 16px
@@ -119,18 +121,29 @@ blockquote
 ul
 	list-style-type square
 code
-	padding 2px 4px
-	border-radius 6px
+	height 20px
+	padding 0 4px
+	display inline-flex
+	justify-content center
+	align-items center
+	font-family $mono
 	font-size 13px
+	white-space nowrap
 	color #5c7080
-	box-shadow 0 0 0 1px #bfccd6
+	box-shadow 0 0 0 1px #bfccd6 inset
 kbd
-	padding 2px 4px
-	border-radius 6px
+	min-width 30px
+	height 22px
+	padding 0 4px 2px
+	display inline-flex
+	justify-content center
+	align-items center
+	font-family $mono
 	font-size 13px
+	white-space nowrap
 	background #394b59
 	color #fff
-	box-shadow 0 2px #182026
+	box-shadow 0 -2px #182026 inset
 input[type=number]
 	&::-webkit-inner-spin-button
 		appearance none
@@ -199,8 +212,6 @@ for name, color in $colors
 .Button--small
 	height 24px
 	padding 0 2px
-.Button--rounded
-	border-radius 6px
 .Button--onlyIcon
 	width 32px
 	&.Button--small
@@ -217,7 +228,6 @@ for name, color in $colors
 	height 30px
 	padding 0 4px
 	border solid 1px #bfccd6
-	border-radius 0
 	display inline-flex
 	justify-content center
 	align-items center
@@ -226,15 +236,12 @@ for name, color in $colors
 	transition-duration .1s
 	&:focus-within
 		border-color #137cbd
-		border-radius 6px
 		box-shadow 0 0 0 2px #137cbd88
 		z-index 1
 .TextInput--basic
 	border 0
 	&:focus-within
 		box-shadow 0 0 0 3px #137cbd88,0 0 0 1px #137cbd
-.TextInput--rounded
-	border-radius 6px
 .TextInput__icon
 	padding 0 4px
 .TextInput__input
@@ -252,13 +259,23 @@ for name, color in $colors
 	justify-content center
 	align-items center
 .TextInput__leftElement
-	margin-left -4px
+	margin 0 4px 0 -4px
 .TextInput__rightElement
-	margin-right -4px
+	margin 0 -4px 0 4px
 
 .PasswordInput--isHidePassword
 	> .TextInput__input
 		text-security square
+
+.NumberInput__spins
+	height 100%
+	border-left solid 1px #bfccd6
+	display flex
+	flex-direction column
+.NumberInput__spin
+	height 50%
+.NumberInput__spinDown
+	border-top solid 1px #bfccd6
 
 .Checkbox
 .Radio
@@ -288,7 +305,6 @@ for name, color in $colors
 	width 20px
 	height 20px
 	border solid 1px #bfccd6
-	border-radius 6px
 	display flex
 	justify-content center
 	align-items center
@@ -340,7 +356,6 @@ for name, color in $colors
 	position relative
 	width 36px
 	height 20px
-	border-radius 30px
 	background #d8e1e8
 	transition-property border-color,background
 	transition-duration .1s
@@ -351,7 +366,6 @@ for name, color in $colors
 	width 18px
 	height 18px
 	border solid 1px #a7b6c2
-	border-radius 30px
 	background #fff
 	transition left .1s
 .Switch__hidden
@@ -363,7 +377,6 @@ for name, color in $colors
 	height 30px
 	padding 0 4px
 	border solid 1px
-	border-radius 6px
 	display inline-flex
 	justify-content center
 	align-items center
@@ -397,7 +410,6 @@ for name, color in $colors
 .Select__popper
 	width 100%
 	border solid 1px #bfccd6
-	border-radius 6px
 	background #fff
 	overflow hidden
 	box-shadow 0 3px 8px #29374233
@@ -428,34 +440,12 @@ for name, color in $colors
 	border-top solid 1px #bfccd6
 	margin 4px 0
 
-.InputGroup
-	display inline-flex
-	justify-content center
-	align-items center
-	> *
-		border-radius 0
-		margin-left -1px
-		&:first-child
-			margin-left 0
-			border-top-left-radius 6px
-			border-bottom-left-radius 6px
-		&:last-child
-			border-top-right-radius 6px
-			border-bottom-right-radius 6px
-.InputGroup--left
-	justify-content flex-start
-.InputGroup--center
-	justify-content center
-.InputGroup--right
-	justify-content flex-end
-
 .Menu
 	width max-content
 	min-width 150px
 	max-width 400px
 	padding 4px 0
 	border solid 1px #bfccd6
-	border-radius 8px
 	display inline-block
 	background #fff
 .Menu--basic
@@ -511,9 +501,9 @@ for name, color in $colors
 
 .Menubar
 	border-bottom solid 1px #bfccd6
+	z-index 9
 
 .Table
-	border-radius 8px
 	border-collapse collapse
 	display inline-block
 	background #fff
@@ -557,7 +547,6 @@ for name, color in $colors
 .DateTime
 	padding 8px
 	border solid 1px #bfccd6
-	border-radius 6px
 	display inline-flex
 	flex-direction column
 	background #fff
@@ -583,7 +572,6 @@ for name, color in $colors
 	grid-template-columns repeat(7,1fr)
 	grid-auto-rows 30px
 .DateTime__day
-	border-radius 6px
 	display flex
 	justify-content center
 	align-items center
@@ -607,7 +595,6 @@ for name, color in $colors
 .DateTime__times
 	margin-top 8px
 	border solid 1px #bfccd6
-	border-radius 6px
 	display inline-flex
 	justify-content center
 	align-items center
@@ -616,7 +603,6 @@ for name, color in $colors
 	padding 0 4px
 
 .DateTimeInput__popper
-	border-radius 6px
 	box-shadow 0 3px 8px #29374233
 
 .Tabs__tabs
@@ -641,13 +627,13 @@ for name, color in $colors
 .Popover__popper
 	width max-content
 	border solid 1px #bfccd6
-	border-radius 8px
 	background #fff
 	box-shadow 0 3px 8px #29374233
 	pointer-events auto
 
 #portalsEl
-	z-index 4
+	> *
+		z-index 5
 
 ((text))
 
@@ -749,7 +735,7 @@ for whs in nowrap pre pre-wrap
 .text-italic
 	font-style italic
 .text-mono
-	font-family monospace
+	font-family $mono
 .text-lower
 	text-transform lowercase
 .text-upper

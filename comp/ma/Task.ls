@@ -4,15 +4,10 @@ m.Task = m.comp do
 		{app} = task
 		@title = app.title or app.name or app.path
 		@icon = app.icon or \fad:window
-		@sandbox =
-			\allow-downloads
-			\allow-pointer-lock
-			\allow-popups
-			\allow-presentation
-			\allow-scripts
-		if task.system
-			@sandbox.push \allow-same-origin
-		@sandbox *= " "
+		@minimizable = @attrs.minimizable ? yes
+		@maximizable = @attrs.maximizable ? yes
+		@minimized = no
+		@maximized = no
 		@width = app.width or 700
 		@height = app.height or 500
 		@x = app.x ? Math.floor (m.desktopWidth - @width) / 2
@@ -20,6 +15,25 @@ m.Task = m.comp do
 		@tranX = 0
 		@tranY = 0
 		@moving = no
+		@sandbox =
+			\allow-downloads
+			\allow-pointer-lock
+			\allow-popups
+			\allow-presentation
+			\allow-scripts
+		if app.system
+			@sandbox.push \allow-same-origin
+		@sandbox *= " "
+		@buttonItems =
+			* text: "Thu nhỏ"
+				icon: \far:minus
+			* text: "Phóng to"
+				icon: \far:plus
+			* text: "Đóng"
+				color: \red
+				icon: \far:times
+				onclick: !~>
+					@close!
 
 	oncreate: !->
 		{task} = @attrs
@@ -30,6 +44,8 @@ m.Task = m.comp do
 		delete task.tmpl
 		task.win = @
 		m.redraw!
+
+	minimize: (val = not @minimized) !->
 
 	close: (val) !->
 		{task} = @attrs
@@ -49,7 +65,7 @@ m.Task = m.comp do
 			@tranY += event.movementY
 			@dialogEl.style.translate = "#{@tranX}px #{@tranY}px"
 
-	onpointerupTitle: (event) !->
+	onlostpointercaptureTitle: (event) !->
 		if @moving
 			@x += @tranX
 			@y += @tranY
@@ -57,6 +73,9 @@ m.Task = m.comp do
 			@tranY = 0
 			@moving = no
 			@dialogEl.style.translate = ""
+
+	oncontextmenuTitle: (event) !->
+		m.openContextMenu event, @buttonItems
 
 	onclickClose: (event) !->
 		@close!
@@ -70,15 +89,23 @@ m.Task = m.comp do
 					width: @width
 					height: @height
 				m \.Task__header,
-					m m.Button,
-						class: \Task__icon
-						basic: yes
-						small: yes
-						icon: @icon
+					m m.Popover,
+						position: \bottom-start
+						content: (close) ~>
+							m m.Menu,
+								basic: yes
+								items: @buttonItems
+								onitemclick: close
+						m m.Button,
+							class: \Task__icon
+							basic: yes
+							small: yes
+							icon: @icon
 					m \.Task__title,
 						onpointerdown: @onpointerdownTitle
 						onpointermove: @onpointermoveTitle
-						onpointerup: @onpointerupTitle
+						onlostpointercapture: @onlostpointercaptureTitle
+						oncontextmenu: @oncontextmenuTitle
 						@title
 					m \.Task__buttons,
 						m m.Button,

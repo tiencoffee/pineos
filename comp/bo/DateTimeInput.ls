@@ -3,14 +3,14 @@ m.DateTimeInput = m.comp do
 		@controlled = @attrs.controlled ? \value of @attrs
 		@isOnchange = no
 		@parseFormats =
-			"YYYY-MM-DD"
-			"YYYY-MM-DDTHH:mm"
-			"YYYY-MM-DDTHH:mm:ss"
 			"YYYY-MM-DDTHH:mm:ss.S"
-			"D/M/YYYY"
-			"D/M/YYYY H:m"
-			"D/M/YYYY H:m:s"
+			"YYYY-MM-DDTHH:mm:ss"
+			"YYYY-MM-DDTHH:mm"
+			"YYYY-MM-DD"
 			"D/M/YYYY H:m:s.S"
+			"D/M/YYYY H:m:s"
+			"D/M/YYYY H:m"
+			"D/M/YYYY"
 		@updateTimePrecision!
 		@day = dayjs (if @controlled => @attrs.value else @attrs.defaultValue), @parseFormats
 		@value = @getValue @day
@@ -84,11 +84,12 @@ m.DateTimeInput = m.comp do
 				m.redraw!
 
 	handleOnchange: (value) !->
-		@isOnchange = yes
 		day = dayjs value, @parseFormats
 		value = @getValue day
 		outputValue = @getOutputValue day
-		unless @controlled
+		if @controlled
+			@isOnchange = yes
+		else
 			@day = day
 			@value = value
 			@outputValue = outputValue

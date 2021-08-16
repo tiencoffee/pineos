@@ -9,14 +9,12 @@ m.TextInput = m.comp do
 		@attrs.ref? @
 
 	onbeforeupdate: (old, first) !->
-		@attrs.rounded ?= yes
 		if @isOnchange
 			@isOnchange = no
 			if @attrs.value isnt @value
 				@value = @attrs.value
-		else
-			if @attrs.value isnt old.value
-				@value = @attrs.value
+		if @attrs.value isnt old.value
+			@value = @attrs.value
 
 	oninputInput: (event) !->
 		if not @controlled or @attrs.onchange
@@ -24,8 +22,9 @@ m.TextInput = m.comp do
 		@attrs.oninput? event
 
 	onchangeInput: (event) !->
-		@isOnchange = yes
-		unless @controlled
+		if @controlled
+			@isOnchange = yes
+		else
 			@value = event.target.value
 		@attrs.onchange? event
 
@@ -66,6 +65,12 @@ m.TextInput = m.comp do
 					else
 						text = await m.readClipboard!
 					document.execCommand \insertText,, text
+			,,
+			* text: "Chọn tất cả"
+				label: "Ctrl+A"
+				onclick: !~>
+					@input.dom.focus!
+					@input.dom.select!
 		@attrs.oncontextmenu? event
 
 	view: ->
@@ -73,7 +78,6 @@ m.TextInput = m.comp do
 			class: m.class do
 				"disabled": @attrs.disabled
 				"TextInput--basic": @attrs.basic
-				"TextInput--rounded": @attrs.rounded
 				@attrs.class
 			style: m.style do
 				width: @attrs.width
@@ -100,6 +104,7 @@ m.TextInput = m.comp do
 				required: @attrs.required
 				readOnly: @attrs.readOnly
 				value: @value
+				title: ""
 				oninput: @oninputInput
 				onchange: @onchangeInput
 				onfocus: @attrs.onfocus
