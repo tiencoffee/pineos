@@ -1,4 +1,4 @@
-m.Tabs = m.comp do
+Tabs = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \tabId of @attrs
 		@tabId = if @controlled => @attrs.tabId else @attrs.defaultTabId
@@ -29,7 +29,7 @@ m.Tabs = m.comp do
 			@updateAnimate!
 
 	updateTabs: !->
-		@tabs = m.castArray @attrs.tabs
+		@tabs = os.castArray @attrs.tabs
 		@tab = @tabs.find (.id is @tabId) or @tabs.0
 
 	updateAnimate: !->
@@ -57,4 +57,4 @@ m.Tabs = m.comp do
 						tab.title
 				m \.Tabs__indicator
 			m \.Tabs__panel,
-				m.safeCall @tab.panel
+				os.call @tab.panel

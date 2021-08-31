@@ -1,4 +1,4 @@
-m.TextInput = m.comp do
+TextInput = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@value = if @controlled => @attrs.value else @attrs.defaultValue
@@ -29,7 +29,7 @@ m.TextInput = m.comp do
 		@attrs.onchange? event
 
 	oncontextmenuInput: (event) !->
-		m.openContextMenu event,
+		os.openContextMenu event,
 			* text: "Hoàn tác"
 				icon: \undo
 				label: "Ctrl+Z"
@@ -44,7 +44,7 @@ m.TextInput = m.comp do
 					document.execCommand \redo
 			,,
 			* text: "Cắt"
-				icon: \cut
+				icon: \scissors
 				label: "Ctrl+X"
 				onclick: !~>
 					@input.dom.focus!
@@ -60,13 +60,14 @@ m.TextInput = m.comp do
 				label: "Ctrl+V"
 				onclick: !~>
 					@input.dom.focus!
-					if tid
-						text = await send \readClipboard
+					if topWin
+						text = await os.readClipboard!
 					else
-						text = await m.readClipboard!
+						text = await send \readClipboard
 					document.execCommand \insertText,, text
 			,,
 			* text: "Chọn tất cả"
+				icon: \square-dashed
 				label: "Ctrl+A"
 				onclick: !~>
 					@input.dom.focus!
@@ -85,9 +86,9 @@ m.TextInput = m.comp do
 			if @attrs.element or @attrs.icon
 				if @attrs.element
 					m \.TextInput__element.TextInput__leftElement,
-						m.safeCall @attrs.element
+						os.call @attrs.element
 				else
-					m m.Icon,
+					m Icon,
 						class: "TextInput__icon TextInput__leftIcon"
 						name: @attrs.icon
 			m \input.TextInput__input,
@@ -114,8 +115,8 @@ m.TextInput = m.comp do
 			if @attrs.rightElement or @attrs.rightIcon
 				if @attrs.rightElement
 					m \.TextInput__element.TextInput__rightElement,
-						m.safeCall @attrs.rightElement
+						os.call @attrs.rightElement
 				else
-					m m.Icon,
+					m Icon,
 						class: "TextInput__icon TextInput__rightIcon"
 						name: @attrs.rightIcon

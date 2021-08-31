@@ -1,6 +1,6 @@
-m.Button = m.comp do
+Button = m.comp do
 	onbeforeupdate: !->
-		@attrs.type = \button
+		@attrs.type ?= \button
 
 	view: ->
 		m \button.Button,
@@ -26,14 +26,15 @@ m.Button = m.comp do
 			onpointerdown: @attrs.onpointerdown
 			onpointerup: @attrs.onpointerup
 			onlostpointercapture: @attrs.onlostpointercapture
+			oncontextmenu: @attrs.oncontextmenu
 			if @attrs.icon
-				m m.Icon,
+				m Icon,
 					class: "Button__icon Button__leftIcon"
 					name: @attrs.icon
 			if @attrs.children.length
 				m \.Button__text,
 					@attrs.children
 			if @attrs.rightIcon
-				m m.Icon,
+				m Icon,
 					class: "Button__icon Button__rightIcon"
 					name: @attrs.rightIcon

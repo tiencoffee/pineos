@@ -1,4 +1,4 @@
-m.Select = m.comp do
+Select = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@value = if @controlled => @attrs.value else @attrs.defaultValue
@@ -18,12 +18,12 @@ m.Select = m.comp do
 
 	updateItems: !->
 		@hasIcons = no
-		@items = m.castArray @attrs.items
+		@items = os.castArray @attrs.items
 			.map (item) ~>
 				if item?
-					if item.icon
-						@hasIcons = yes
 					if item instanceof Object
+						if item.icon
+							@hasIcons = yes
 						icon: item.icon
 						text: (item.text ? item.value) + ""
 						value: item.value
@@ -46,10 +46,11 @@ m.Select = m.comp do
 			unless @popper
 				@updateItems!
 				@hoverItem = @item
+				parentEl = @dom.closest ".OS__popper,.Task" or portalsEl
 				@popperEl = document.createElement \div
 				@popperEl.className = m.class do
+					"Select__popper OS__popper"
 					@attrs.portalClass
-					"Select__popper"
 				comp =
 					view: ~>
 						m \.Select__items,
@@ -63,7 +64,7 @@ m.Select = m.comp do
 										onclick: (event) !~>
 											@onclickItem item, index, event
 										if @hasIcons
-											m m.Icon,
+											m Icon,
 												class: \Select__itemIcon
 												name: item.icon
 										m \.Select__itemText,
@@ -71,13 +72,13 @@ m.Select = m.comp do
 								else
 									m \.Select__divider
 				m.mount @popperEl, comp
-				@popper = m.createPopper @dom, @popperEl,
+				@popper = os.createPopper @dom, @popperEl,
 					placement: \bottom
 					allowedFlips: [\bottom \top]
 				@popperEl.style <<< m.style do
 					width: @dom.offsetWidth
-					height: Math.floor innerHeight / 2 - @dom.offsetHeight * 2
-				portalsEl.appendChild @popperEl
+					maxHeight: Math.floor innerHeight / 2 - @dom.offsetHeight * 2
+				parentEl.appendChild @popperEl
 				document.addEventListener \mousedown @onmousedownGlobal
 				if @item
 					if itemEl = @popperEl.querySelector \.hover
@@ -127,11 +128,11 @@ m.Select = m.comp do
 			onclick: @onclick
 			if @item
 				if @hasIcons
-					m m.Icon,
+					m Icon,
 						class: \Select__icon
 						name: @item.icon
 			m \.Select__text,
 				@item?text
-			m m.Icon,
+			m Icon,
 				class: \Select__arrow
 				name: \sort

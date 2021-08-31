@@ -1,8 +1,14 @@
-m.App = m.comp do
+App = m.comp do
 	view: ->
 		m \.p-3,
-			m m.Tooltip,
+			m Tooltip,
 				content: "Không có gì :)"
 				m \span,
 					"Sao dị?"
-			m m.TextInput
+			m Select,
+				items:
+					"Mưa đêm ngoại ô"
+					"Hai mùa mưa"
+					"Trăng tàn trên hè phố"
+					"Ngày đó xa rồi"
+			m DateTimeInput

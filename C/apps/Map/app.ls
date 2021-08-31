@@ -1,4 +1,4 @@
-m.App = m.comp do
+App = m.comp do
 	view: ->
 		m \.full,
 			m \iframe.__map,

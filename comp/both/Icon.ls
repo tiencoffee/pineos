@@ -1,10 +1,12 @@
-m.Icon = m.comp do
+Icon = m.comp do
 	view: ->
 		name = (@attrs.name ? "") + ""
+		[name, color] = name.split \|
+		color = \# + color if /^[\da-fA-F]{6}$/.test color
 		[kind, val] = match name
 			| /\/\// => [\img name]
 			| /^\d+$/ => [\img "https://flaticon.com/svg/static/icons/svg/#{name.slice 0 -3}/#name.svg"]
-			| /^fa[srldb]?:/ => name.split \:
+			| /^fa[srltdb]?:/ => name.split \:
 			| /./ => [\fas name]
 			else [\blank]
 		switch kind
@@ -29,3 +31,4 @@ m.Icon = m.comp do
 					@attrs.class
 				style: m.style do
 					fontSize: @size
+					color: color

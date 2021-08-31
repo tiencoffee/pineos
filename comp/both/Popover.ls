@@ -1,4 +1,4 @@
-m.Popover = m.comp do
+Popover = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \isOpen of @attrs
 		@isOpen = if @controlled => @attrs.isOpen else @attrs.defaultIsOpen
@@ -22,31 +22,53 @@ m.Popover = m.comp do
 			while target?tag.isWrapper
 				target .= children.0
 			if target?tag
-				{onclick, onmouseenter, onmouseleave, onremove} = target{}attrs
+				target.attrs ?= {}
 				if @isOpen
-					if @attrs.interactionType is \click
+					if @attrs.interactionType in [\click \contextmenu]
 						target.attrs.class ?= ""
 						target.attrs.class += " active"
-				target.attrs.onclick = (...args) !~>
-					if @attrs.interactionType is \click
+					if @attrs.interactionType is \contextmenu
+						{onclick} = target.attrs
+						target.attrs.onclick = (...args) !~>
+							isOpen = not @isOpen
+							unless @controlled
+								@isOpen = isOpen
+								@willUpdateIsOpen = yes
+							@attrs.oninteraction? isOpen
+							onclick? ...args
+							m.redraw!
+				switch @attrs.interactionType
+				| \click
+					{onclick} = target.attrs
+					target.attrs.onclick = (...args) !~>
 						isOpen = not @isOpen
 						unless @controlled
 							@isOpen = isOpen
 							@willUpdateIsOpen = yes
 						@attrs.oninteraction? isOpen
+						onclick? ...args
 						m.redraw!
-					onclick? ...args
-				target.attrs.onmouseenter = (...args) !~>
-					if @attrs.interactionType is \hover
+				| \contextmenu
+					{oncontextmenu} = target.attrs
+					target.attrs.oncontextmenu = (...args) !~>
+						isOpen = not @isOpen
+						unless @controlled
+							@isOpen = isOpen
+							@willUpdateIsOpen = yes
+						@attrs.oninteraction? isOpen
+						oncontextmenu? ...args
+						m.redraw!
+				| \hover
+					{onmouseenter, onmouseleave} = target.attrs
+					target.attrs.onmouseenter = (...args) !~>
 						clearTimeout @leaveTimo
 						unless @controlled
 							@isOpen = yes
 							@willUpdateIsOpen = yes
 						@attrs.oninteraction? yes
+						onmouseenter? ...args
 						m.redraw!
-					onmouseenter? ...args
-				target.attrs.onmouseleave = (...args) !~>
-					if @attrs.interactionType is \hover
+					target.attrs.onmouseleave = (...args) !~>
 						@leaveTimo = setTimeout !~>
 							unless @controlled
 								@isOpen = no
@@ -54,13 +76,14 @@ m.Popover = m.comp do
 							@attrs.oninteraction? no
 							m.redraw!
 						, @attrs.hoverCloseDelay
-					onmouseleave? ...args
+						onmouseleave? ...args
+				{onremove} = @attrs
 				target.attrs.onremove = !~>
 					if @isOpen
 						@isOpen = no
 						@attrs.oninteraction? no
-						@updateIsOpen!
-						onremove?!
+					@updateIsOpen!
+					onremove?!
 
 	onupdate: !->
 		if @willUpdateIsOpen
@@ -72,9 +95,9 @@ m.Popover = m.comp do
 	updateIsOpen: !->
 		if @isOpen
 			unless @popper
+				parentEl = @dom.closest ".OS__popper,.Task" or portalsEl
 				@popperEl = document.createElement \div
-				parentEl = @dom.closest ".Popover__popper,.Task" or portalsEl
-				@popperEl.className = \Popover__popper
+				@popperEl.className = "Popover__popper OS__popper"
 				@popperEl.onmouseenter = (event) !~>
 					if @attrs.interactionType is \hover
 						unless @attrs.closeOnContentHover
@@ -98,9 +121,9 @@ m.Popover = m.comp do
 				comp =
 					view: (vnode) ~>
 						m \.Popover__content,
-							m.safeCall @attrs.content, close, vnode.dom
+							os.call @attrs.content, close, vnode.dom
 				m.mount @popperEl, comp
-				@popper = m.createPopper @dom, @popperEl,
+				@popper = os.createPopper @dom, @popperEl,
 					placement: @attrs.position
 				document.addEventListener \mousedown @onmousedownGlobal
 				@attrs.onopened?!

@@ -5,8 +5,8 @@ require! {
 process.chdir __dirname
 
 Paths =
-	"comp/bo": globConcat.sync \comp/bo/*
-	"comp/ma": globConcat.sync \comp/ma/*
+	"comp/both": globConcat.sync \comp/both/*
+	"comp/main": globConcat.sync \comp/main/*
 	"C/apps": globConcat.sync \C/apps/*
 	"C": globConcat.sync \C/apps/**
 

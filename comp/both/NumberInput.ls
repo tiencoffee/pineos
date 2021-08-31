@@ -1,4 +1,4 @@
-m.NumberInput = m.comp do
+NumberInput = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@timoSpin = void
@@ -54,7 +54,7 @@ m.NumberInput = m.comp do
 					document.execCommand \redo
 			,,
 			* text: "Cắt"
-				icon: \cut
+				icon: \scissors
 				label: "Ctrl+X"
 				onclick: !~>
 					@input.input.dom.focus!
@@ -70,13 +70,14 @@ m.NumberInput = m.comp do
 				label: "Ctrl+V"
 				onclick: !~>
 					@input.input.dom.focus!
-					if tid
-						text = await send \readClipboard
+					if topWin
+						text = await os.readClipboard!
 					else
-						text = await m.readClipboard!
+						text = await send \readClipboard
 					document.execCommand \insertText,, text
 			,,
 			* text: "Chọn tất cả"
+				icon: \square-dashed
 				label: "Ctrl+A"
 				onclick: !~>
 					@input.dom.focus!
@@ -88,7 +89,7 @@ m.NumberInput = m.comp do
 		clearInterval @intvSpin
 
 	view: ->
-		m m.TextInput,
+		m TextInput,
 			class:
 				"NumberInput"
 			controlled: @controlled
@@ -110,14 +111,14 @@ m.NumberInput = m.comp do
 			oncontextmenu: @oncontextmenu
 			rightElement:
 				m \.NumberInput__spins,
-					m m.Button,
+					m Button,
 						class: "NumberInput__spin NumberInput__spinUp"
 						basic: yes
 						icon: \chevron-up
 						onpointerdown: (event) !~>
 							@onpointerdownSpin 1 event
 						onlostpointercapture: @onlostpointercaptureSpin
-					m m.Button,
+					m Button,
 						class: "NumberInput__spin NumberInput__spinDown"
 						basic: yes
 						icon: \chevron-down

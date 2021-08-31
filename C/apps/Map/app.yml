@@ -1,3 +1,5 @@
 name: Map
-icon: fad:route
-system: yes
+icon: fad:map-location-dot
+acceptFirstMouse: no
+type: system
+admin: yes

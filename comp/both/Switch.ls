@@ -1,4 +1,4 @@
-m.Checkbox = m.comp do
+Switch = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \checked of @attrs
 		@checked = Boolean if @controlled => @attrs.checked else @attrs.defaultChecked
@@ -13,18 +13,14 @@ m.Checkbox = m.comp do
 		@attrs.oninput? event
 
 	view: ->
-		m \.Checkbox,
+		m \.Switch,
 			class: m.class do
 				"disabled": @attrs.disabled
-				"Checkbox--checked": @checked
-			m \label.Checkbox__content,
-				m \.Checkbox__input,
-					if @checked
-						m \i.fas.fa-check.Checkbox__check
-				if @attrs.label
-					m \.Checkbox__label,
-						@attrs.label
-				m \input.Checkbox__hidden,
+				"Switch--checked": @checked
+			m \label.Switch__content,
+				m \.Switch__input,
+					m \.Switch__thumb
+				m \input.Switch__hidden,
 					type: \checkbox
 					disabled: @attrs.disabled
 					checked: @checked

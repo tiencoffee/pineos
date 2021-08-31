@@ -16,16 +16,11 @@ user-drag()
 user-modify()
 	-webkit-user-modify arguments
 	user-modify arguments
-text-truncate(line)
-	if line < 2
-		text-overflow ellipsis
-		white-space nowrap
-		overflow hidden
-	else
-		display -webkit-box
-		line-clamp line
-		box-orient vertical
-		overflow hidden
+text-truncate()
+	display -webkit-box
+	line-clamp arguments
+	box-orient vertical
+	overflow hidden
 
 $colors = {
 	red: {
@@ -61,11 +56,11 @@ $colors = {
 		basicActive: #b8d7eb
 	}
 }
-$sans = unquote("Ropa Sans,Roboto,sans-serif")
+$sans = unquote("Segoe UI,Noto Sans,sans-serif")
 $mono = unquote("JetBrains Mono,monospace")
 
-@import "https://fonts.googleapis.com/css?family=Ropa+Sans:,b|Roboto:,b|JetBrains+Mono:,b"
-@import "https://cdn.jsdelivr.net/gh/tiencoffee/libs/font-awesome/all.min.css"
+@import "https://fonts.googleapis.com/css?family=Noto Sans:,b|JetBrains+Mono:,b"
+@import "https://cdn.jsdelivr.net/npm/fa6/fa6.min.css"
 
 *, *:before, *:after
 	box-sizing border-box
@@ -85,9 +80,12 @@ $mono = unquote("JetBrains Mono,monospace")
 		background #394b59
 body
 	position absolute
-	inset 0
+	left 0
+	top 0
+	width 100%
+	height 100%
 	margin 0
-	font 16px $sans
+	font 14px $sans
 	color #182026
 	overflow hidden
 	line-height 1.35
@@ -147,20 +145,29 @@ kbd
 input[type=number]
 	&::-webkit-inner-spin-button
 		appearance none
+.fa, .fas, .far, .fal, .fat, .fad, .fab
+	font-size 115%
 
 #appEl
+.App
 	position absolute
-	inset 0
+	left 0
+	top 0
+	width 100%
+	height 100%
+	overflow hidden
 
 .Icon
+	min-width 18px
 	display inline-flex
 	justify-content center
 	align-items center
 	box-sizing content-box
 .Icon--img
-	height 18px
 	min-width 18px
+	height 18px
 	min-height 18px
+	aspect-ratio 1
 	object-fit scale-down
 .Icon--blank
 	width 18px
@@ -410,14 +417,13 @@ for name, color in $colors
 .Select__popper
 	width 100%
 	border solid 1px #bfccd6
+	overflow-y auto
+	scroll-padding 4px 0
 	background #fff
-	overflow hidden
 	box-shadow 0 3px 8px #29374233
 .Select__items
 	height 100%
 	padding 4px 0
-	overflow-y auto
-	scroll-padding 4px 0
 .Select__item
 	min-height 30px
 	display flex
@@ -450,6 +456,17 @@ for name, color in $colors
 	background #fff
 .Menu--basic
 	border 0
+.Menu__header
+	min-height 30px
+	padding 0 12px
+	display flex
+	align-items center
+	font-weight 700
+	&:not(:first-child)
+		min-height 34px
+		margin-top 4px
+		padding-top 4px
+		border-top solid 1px #bfccd6
 .Menu__item
 	min-height 30px
 	padding 0 8px
@@ -508,23 +525,18 @@ for name, color in $colors
 	display inline-block
 	background #fff
 	overflow auto
-	tr
-		height 30px
-	th
-		text-align left
-	td, th
-		padding 0 8px
-.Table--hasHeader
-	tr:first-child
-		position sticky
-		top 0
-		background #fff
-		box-shadow 0 2px #bfccd6
-.Table--bordered
+tr
+	height 30px
+td, th
+	padding 0 8px
+th
+	text-align left
+.Table--borderedRow
 	tr
 		border-bottom solid 1px #bfccd6
 		&:last-child
-			border-bottom 0
+			border-bottom-color #0000
+.Table--borderedColumn
 	td, th
 		border-right solid 1px #bfccd6
 		&:last-child
@@ -532,7 +544,10 @@ for name, color in $colors
 .Table--striped
 	tr:nth-child(even)
 		background #f5f8fa
-.Table--interactive
+.Table--fixed
+	> .Table__content
+		table-layout fixed
+.Table--interactiveRow
 	&.Table--hasHeader tr + tr
 	&:not(.Table--hasHeader) tr
 		&:hover
@@ -540,8 +555,23 @@ for name, color in $colors
 		&.active
 		&:active
 			background #d8e1e8
+.Table--interactiveCol
+	&.Table--hasHeader tr + tr > td
+	&:not(.Table--hasHeader) tr > td
+		&:hover
+			background #ebf1f5
+		&.active
+		&:active
+			background #d8e1e8
+.Table--hasHeader
+	tr:first-child
+		position sticky
+		top 0
+		background #fff
+		border-bottom solid 2px #bfccd6
 .Table__content
-	width 100%
+	width fit-content
+	min-width 100%
 	display table
 
 .DateTime
@@ -550,6 +580,8 @@ for name, color in $colors
 	display inline-flex
 	flex-direction column
 	background #fff
+.DateTime--basic
+	border 0
 .DateTime__header
 	padding-bottom 8px
 	border-bottom solid 1px #bfccd6
@@ -605,6 +637,16 @@ for name, color in $colors
 .DateTimeInput__popper
 	box-shadow 0 3px 8px #29374233
 
+.InputGroup
+	display inline-flex
+	> :not(first-child)
+		margin-left -1px
+	> .TextInput
+	> .PasswordInput
+	> .NumberInput
+	> .DateTimeInput
+		flex 1
+
 .Tabs__tabs
 	position relative
 	display flex
@@ -635,153 +677,177 @@ for name, color in $colors
 	> *
 		z-index 5
 
-((text))
+((css))
 
-.full
-	position absolute
-	left 0
-	top 0
-	width 100%
-	height 100%
+#html
+	.full
+		position absolute
+		left 0
+		top 0
+		width 100%
+		height 100%
 
-.row
-	display flex
-.column
-	display flex
-	flex-direction column
-.wrap
-	flex-wrap wrap
-.col
-	flex 1
-.col-0
-	flex auto
-for i in 1..12
-	val = round(i / 12 * 100%, 5)
-	.col-{i}
-		width val
+	.row
+		display flex
+	.column
+		display flex
+		flex-direction column
+	.wrap
+		flex-wrap wrap
+	.col
+		flex 1
+	.col-0
+		flex initial
+	for i in 1..12
+		val = round(i / 12 * 100%, 5)
+		.col-{i}
+			width val
 
-for k, val in (start flex-start) (center center) (end flex-end)
-	.{k}.row
-		justify-content val
-	.{k}.column
-		align-items val
-for k, val in (top flex-start) (center center) (bottom flex-end)
-	.{k}.row
-		align-items val
-	.{k}.column
-		justify-content val
-.between
-	justify-content space-between
-.around
-	justify-content space-around
-.evenly
-	justify-content space-evenly
-.stretch
-	align-items stretch
+	for val in (start flex-start) (center center) (end flex-end)
+		.{val[0]}
+			justify-content val[1]
+		.{val[0]}.column
+			align-items val[1]
+	for val in (top flex-start) (middle center) (bottom flex-end)
+		.{val[0]}
+			align-items val[1]
+		.{val[0]}.column
+			justify-content val[1]
+	.between
+		justify-content space-between
+	.around
+		justify-content space-around
+	.evenly
+		justify-content space-evenly
+	.stretch
+		align-items stretch
+	for size, z in 0 2px 4px 8px 16px 24px
+		.gap-{z}
+			gap size
+	for size, z in 0 2px 4px 8px 16px 24px
+		.gap-x-{z}
+			column-gap size
+		.gap-y-{z}
+			row-gap size
 
-for pos in absolute relative fixed
-	.{pos}
-		position pos
-for dis in block inline-block inline flex inline-flex grid inline-grid table inline-table
-	.{dis}
-		display dis
-.hidden, [hidden]
-	display none
+	for pos in absolute relative fixed
+		.{pos}
+			position pos
+	for dis in block inline-block inline flex inline-flex grid inline-grid table inline-table
+		.{dis}
+			display dis
+	.hidden, [hidden]
+		display none
 
-props = {m: margin, p: padding}
-sides = {
-	"": ("")
-	x: ("-left" "-right")
-	y: ("-top" "-bottom")
-	l: ("-left")
-	r: ("-right")
-	t: ("-top")
-	b: ("-bottom")
-}
-sizes = 0 2px 4px 8px 16px 24px
-for p, prop in props
-	for s, side in sides
-		for size, z in sizes
-			.{p}{s}-{z}
-				for side2 in side
-					{prop}{side2} size
-			if p is "m" and z
-				.-m{s}-{z}
+	props = {m: margin, p: padding}
+	sides = {
+		"": ("")
+		x: ("-left" "-right")
+		y: ("-top" "-bottom")
+		l: ("-left")
+		r: ("-right")
+		t: ("-top")
+		b: ("-bottom")
+	}
+	sizes = 0 2px 4px 8px 16px 24px
+	for p, prop in props
+		for s, side in sides
+			for size, z in sizes
+				.{p}{s}-{z}
 					for side2 in side
-						margin{side2} -(size)
-		if p is "m"
-			.m{s}-auto
-				for side2 in side
-					margin{side2} auto
+						{prop}{side2} size
+				if p is "m" and z
+					.-m{s}-{z}
+						for side2 in side
+							margin{side2} -(size)
+			if p is "m"
+				.m{s}-auto
+					for side2 in side
+						margin{side2} auto
 
-for size in 0 25 50 75 100
-	.w-{size}
-		width (size)%
-	.h-{size}
-		height (size)%
+	for size in 0 25 50 75 100
+		.w-{size}
+			width (size)%
+		.h-{size}
+			height (size)%
+	for lh in 1 2 3 4
+		.h-{lh}lh
+			height round(1.35 * lh, 2)em
 
-for align in left center right justify
-	.text-{align}
-		text-align align
-for whs in nowrap pre pre-wrap
-	.text-{whs}
-		white-space whs
-.text-truncate
-	text-truncate 1
-.text-small
-	font-size small
-.text-bold
-	font-weight bold
-.text-italic
-	font-style italic
-.text-mono
-	font-family $mono
-.text-lower
-	text-transform lowercase
-.text-upper
-	text-transform uppercase
-.text-decoration-none
-	text-decoration none
-.text-h1
-	font-size 35px
-.text-h2
-	font-size 28px
-.text-h3
-	font-size 22px
-.text-h4
-	font-size 18px
-.text-h5
-	font-size 16px
-.text-h6
-	font-size 13px
+	for align in left center right justify
+		.text-{align}
+			text-align align
+	for whs in nowrap pre pre-wrap
+		.text-{whs}
+			white-space whs
+	.text-truncate
+	.text-truncate-1
+		text-truncate 1
+	for lh in 2 3 4
+		.text-truncate-{lh}
+			text-truncate lh
+	.text-small
+		font-size small
+	.text-bold
+		font-weight 700
+	.text-italic
+		font-style italic
+	.text-mono
+		font-family $mono
+	.text-lower
+		text-transform lowercase
+	.text-upper
+		text-transform uppercase
+	.text-decoration-none
+		text-decoration none
+	.text-h1
+		font-size 35px
+	.text-h2
+		font-size 28px
+	.text-h3
+		font-size 22px
+	.text-h4
+		font-size 18px
+	.text-h5
+		font-size 16px
+	.text-h6
+		font-size 13px
 
-.list-unstyled
-	list-style none
+	.list-unstyled
+		list-style none
 
-.scroll
-	overflow auto
-.scroll-hidden
-	overflow hidden
+	.scroll
+		overflow auto
+	.scroll-hidden
+		overflow hidden
 
-.bg-light
-	background #f5f8fa
-.bg-gray
-	background #8a9ba8
-.bg-dark
-	background #182026
-.text-light
-	color #f5f8fa
-.text-gray
-	color #8a9ba8
-.text-dark
-	color #182026
-for name, color in $colors
-	.bg-{name}
-		background-color: color.bg
-	.text-{name}
-		color: color.bg
+	.bg-white
+		background #fff
+	.bg-light
+		background #f5f8fa
+	.bg-gray
+		background #8a9ba8
+	.bg-dark
+		background #182026
+	.bg-black
+		background #000
+	.text-white
+		color #fff
+	.text-light
+		color #f5f8fa
+	.text-gray
+		color #8a9ba8
+	.text-dark
+		color #182026
+	.text-black
+		color #000
+	for name, color in $colors
+		.bg-{name}
+			background-color: color.bg
+		.text-{name}
+			color: color.bg
 
-.disabled
-	color unset
-	opacity .5
-	pointer-events none
+	.disabled
+		color unset
+		opacity .5
+		pointer-events none

@@ -1,4 +1,4 @@
-m.DateTimeInput = m.comp do
+DateTimeInput = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@isOnchange = no
@@ -17,7 +17,6 @@ m.DateTimeInput = m.comp do
 		@outputValue = @getOutputValue @day
 		@popper = void
 		@popperEl = void
-		@dateTime = void
 
 	onbeforeupdate: (old) !->
 		if (@isOnchange and @attrs.value isnt @value) or (not @isOnchange and @attrs.value isnt old.value)
@@ -52,24 +51,24 @@ m.DateTimeInput = m.comp do
 	togglePopper: (isOpen) !->
 		if isOpen
 			unless @popper
+				parentEl = @dom.closest ".OS__popper,.Task" or portalsEl
 				@popperEl = document.createElement \div
-				@popperEl.className = \DateTimeInput__popper
+				@popperEl.className = "DateTimeInput__popper OS__popper"
 				comp =
 					view: ~>
-						m m.DateTime,
+						m DateTime,
 							timePrecision: @attrs.timePrecision
 							fixedWeekCount: yes
 							value: @outputValue
-							ref: (@dateTime) !~>
 							onvalue: (value) !~>
 								@handleOnchange value
 							onclickday: !~>
 								@togglePopper no
 				m.mount @popperEl, comp
-				@popper = m.createPopper @dom, @popperEl,
+				@popper = os.createPopper @dom, @popperEl,
 					placement: \bottom
 					allowedFlips: [\bottom \top]
-				portalsEl.appendChild @popperEl
+				parentEl.appendChild @popperEl
 				document.addEventListener \mousedown @onmousedownGlobal
 				m.redraw!
 		else
@@ -79,7 +78,6 @@ m.DateTimeInput = m.comp do
 				m.mount @popperEl
 				@popperEl.remove!
 				@popperEl = void
-				@dateTime = void
 				document.removeEventListener \mousedown @onmousedownGlobal
 				m.redraw!
 
@@ -108,19 +106,20 @@ m.DateTimeInput = m.comp do
 			@value = ""
 		@togglePopper yes
 
+	oncontextmenu: (event) !->
+		os.openContextMenu!
+		@attrs.oncontextmenu? event
+
 	onmousedownGlobal: (event) !->
 		{target} = event
-		unless @dom.contains target
-		or @popperEl.contains target
-		or @dateTime.monthSelect.popperEl?contains target
-		or @dateTime.yearSelect.popperEl?contains target
+		unless @dom.contains target or @popperEl.contains target
 			@togglePopper no
 
 	onremove: !->
 		@togglePopper no
 
 	view: ->
-		m m.TextInput,
+		m TextInput,
 			class:
 				"DateTimeInput"
 				@attrs.class
@@ -128,3 +127,4 @@ m.DateTimeInput = m.comp do
 			oninput: @oninput
 			onchange: @onchange
 			onfocus: @onfocus
+			oncontextmenu: @oncontextmenu

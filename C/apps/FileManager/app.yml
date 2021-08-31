@@ -1,0 +1,4 @@
+name: FileManager
+icon: fad:folder
+type: system
+admin: yes

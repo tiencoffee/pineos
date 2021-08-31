@@ -1,32 +1,38 @@
 {
-	"comp/bo": [
-		"comp/bo/Button.ls",
-		"comp/bo/Checkbox.ls",
-		"comp/bo/DateTime.ls",
-		"comp/bo/DateTimeInput.ls",
-		"comp/bo/Icon.ls",
-		"comp/bo/Menu.ls",
-		"comp/bo/Menubar.ls",
-		"comp/bo/NumberInput.ls",
-		"comp/bo/PasswordInput.ls",
-		"comp/bo/Popover.ls",
-		"comp/bo/Radio.ls",
-		"comp/bo/Select.ls",
-		"comp/bo/Switch.ls",
-		"comp/bo/Table.ls",
-		"comp/bo/Tabs.ls",
-		"comp/bo/TextInput.ls",
-		"comp/bo/Tooltip.ls"
+	"comp/both": [
+		"comp/both/Button.ls",
+		"comp/both/Checkbox.ls",
+		"comp/both/DateTime.ls",
+		"comp/both/DateTimeInput.ls",
+		"comp/both/Icon.ls",
+		"comp/both/InputGroup.ls",
+		"comp/both/Menu.ls",
+		"comp/both/Menubar.ls",
+		"comp/both/NumberInput.ls",
+		"comp/both/PasswordInput.ls",
+		"comp/both/Popover.ls",
+		"comp/both/Radio.ls",
+		"comp/both/Select.ls",
+		"comp/both/Switch.ls",
+		"comp/both/Table.ls",
+		"comp/both/Tabs.ls",
+		"comp/both/TextInput.ls",
+		"comp/both/Tooltip.ls"
 	],
-	"comp/ma": [
-		"comp/ma/Task.ls"
+	"comp/main": [
+		"comp/main/Moo.ls",
+		"comp/main/Task.ls"
 	],
 	"C/apps": [
+		"C/apps/FileManager",
 		"C/apps/Map",
 		"C/apps/Textarea"
 	],
 	"C": [
 		"C/apps",
+		"C/apps/FileManager",
+		"C/apps/FileManager/app.ls",
+		"C/apps/FileManager/app.yml",
 		"C/apps/Map",
 		"C/apps/Map/app.ls",
 		"C/apps/Map/app.styl",

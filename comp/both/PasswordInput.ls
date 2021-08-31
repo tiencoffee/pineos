@@ -1,4 +1,4 @@
-m.PasswordInput = m.comp do
+PasswordInput = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@isHidePassword = yes
@@ -12,7 +12,7 @@ m.PasswordInput = m.comp do
 		not= @isHidePassword
 
 	oncontextmenu: (event) !->
-		m.openContextMenu event,
+		os.openContextMenu event,
 			* text: @isHidePassword and "Hiện mật khẩu" or "Ẩn mật khẩu"
 				icon: @isHidePassword and \eye or \eye-slash
 				onclick: !~>
@@ -33,7 +33,7 @@ m.PasswordInput = m.comp do
 					document.execCommand \redo
 			,,
 			* text: "Cắt"
-				icon: \cut
+				icon: \scissors
 				label: "Ctrl+X"
 				disabled: @isHidePassword
 				onclick: !~>
@@ -51,13 +51,14 @@ m.PasswordInput = m.comp do
 				label: "Ctrl+V"
 				onclick: !~>
 					@input.input.dom.focus!
-					if tid
-						text = await send \readClipboard
+					if topWin
+						text = await os.readClipboard!
 					else
-						text = await m.readClipboard!
+						text = await send \readClipboard
 					document.execCommand \insertText,, text
 			,,
 			* text: "Chọn tất cả"
+				icon: \square-dashed
 				label: "Ctrl+A"
 				onclick: !~>
 					@input.dom.focus!
@@ -65,7 +66,7 @@ m.PasswordInput = m.comp do
 		@attrs.oncontextmenu? event
 
 	view: ->
-		m m.TextInput,
+		m TextInput,
 			class:
 				"PasswordInput--isHidePassword": @isHidePassword
 				"PasswordInput"
@@ -88,9 +89,9 @@ m.PasswordInput = m.comp do
 			oncontextmenu: @oncontextmenu
 			element: @attrs.element
 			rightElement:
-				m m.Tooltip,
+				m Tooltip,
 					content: @isHidePassword and "Hiện mật khẩu" or "Ẩn mật khẩu"
-					m m.Button,
+					m Button,
 						style:
 							marginRight: 2
 						basic: yes

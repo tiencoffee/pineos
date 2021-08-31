@@ -1,4 +1,4 @@
-m.Tooltip = m.comp do
+Tooltip = m.comp do
 	onbeforeupdate: !->
 		if target = @attrs.children.0
 			while target?tag.isWrapper
@@ -6,21 +6,21 @@ m.Tooltip = m.comp do
 			if target?tag
 				{onmouseenter, onmouseleave} = target{}attrs
 				target.attrs.onmouseenter = (...args) !~>
-					content = m.safeCall @attrs.content
+					content = os.call @attrs.content
 					content += ""
 					rect = @dom.getBoundingClientRect!
-					if tid
-						send \openTooltip content, rect,
+					if topWin
+						os.openTooltip content, rect,
 							position: @attrs.position
 					else
-						m.openTooltip content, rect,
+						send \openTooltip content, rect,
 							position: @attrs.position
 					onmouseenter? ...args
 				target.attrs.onmouseleave = (...args) !~>
-					if tid
-						send \closeTooltip
+					if topWin
+						os.closeTooltip!
 					else
-						m.closeTooltip!
+						send \closeTooltip
 					onmouseleave? ...args
 
 	view: ->

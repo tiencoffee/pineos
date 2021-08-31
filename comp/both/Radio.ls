@@ -1,4 +1,4 @@
-m.Radio = m.comp do
+Radio = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \checked of @attrs
 		@checked = Boolean if @controlled => @attrs.checked else @attrs.defaultChecked

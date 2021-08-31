@@ -1,4 +1,4 @@
-m.DateTime = m.comp do
+DateTime = m.comp do
 	oninit: !->
 		@controlled = @attrs.controlled ? \value of @attrs
 		@today = dayjs!
@@ -27,9 +27,9 @@ m.DateTime = m.comp do
 			@day ?= dayjs!
 		@updateDays!
 		year = @day.year!
-		minYear = year - 20
+		minYear = year - 10
 		minYear = 1000 if minYear < 1000
-		maxYear = year + 20
+		maxYear = year + 10
 		maxYear = 9999 if maxYear > 9999
 		@yearItems = [minYear to maxYear]
 
@@ -98,13 +98,16 @@ m.DateTime = m.comp do
 
 	view: ->
 		m \.DateTime,
+			class: m.class do
+				"DateTime--basic": @attrs.basic
+				@attrs.class
 			m \.DateTime__header,
-				m m.Button,
+				m Button,
 					class: \DateTime__prev
 					basic: yes
 					icon: \chevron-left
 					onclick: @onclickPrev
-				m m.Select,
+				m Select,
 					class: \DateTime__month
 					basic: yes
 					width: 115
@@ -114,7 +117,7 @@ m.DateTime = m.comp do
 						value: it
 					ref: (@monthSelect) !~>
 					onitemselect: @onitemselectMonth
-				m m.Select,
+				m Select,
 					class: \DateTime__year
 					basic: yes
 					width: 85
@@ -122,7 +125,7 @@ m.DateTime = m.comp do
 					items: @yearItems
 					ref: (@yearSelect) !~>
 					onitemselect: @onitemselectYear
-				m m.Button,
+				m Button,
 					class: \DateTime__next
 					basic: yes
 					icon: \chevron-right
@@ -147,7 +150,7 @@ m.DateTime = m.comp do
 						day.date!
 			if @attrs.timePrecision
 				m \.DateTime__times,
-					m m.TextInput,
+					m TextInput,
 						type: \number
 						basic: yes
 						width: 40
@@ -159,7 +162,7 @@ m.DateTime = m.comp do
 						onchange: (event) !~>
 							@onchangeTime \hour event
 					m \.DateTime__separator \:
-					m m.TextInput,
+					m TextInput,
 						type: \number
 						basic: yes
 						width: 40
@@ -173,7 +176,7 @@ m.DateTime = m.comp do
 					if @attrs.timePrecision isnt \minute
 						m.fragment do
 							m \.DateTime__separator \:
-							m m.TextInput,
+							m TextInput,
 								type: \number
 								basic: yes
 								width: 40
@@ -187,7 +190,7 @@ m.DateTime = m.comp do
 					if @attrs.timePrecision is \millisecond
 						m.fragment do
 							m \.DateTime__separator \.
-							m m.TextInput,
+							m TextInput,
 								type: \number
 								basic: yes
 								width: 50

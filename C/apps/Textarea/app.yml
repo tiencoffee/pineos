@@ -1,3 +1,4 @@
 name: Textarea
 icon: fad:edit
-system: yes
+type: system
+admin: yes

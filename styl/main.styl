@@ -1,0 +1,144 @@
+.App
+	display flex
+	flex-direction column
+.App__tasks
+	position relative
+	flex-grow 1
+	z-index 0
+.App__taskbar
+	padding 4px
+	border-top solid 1px #bfccd6
+	display flex
+	column-gap 4px
+	align-items center
+	background #fff
+	z-index 1
+.App__taskbarTasks
+	display flex
+	flex 1
+	column-gap 4px
+.App__nightLight
+	position absolute
+	left 0
+	top 0
+	width 100%
+	height 100%
+	background #fc83
+	mix-blend-mode multiply
+	pointer-events none
+	z-index 10000
+
+.Task
+	position absolute
+	inset 0
+	pointer-events none
+.Task--maximized
+	.Task__dialog
+		animation Task--maximized .4s cubic-bezier(.25,1,.5,1) forwards
+@keyframes Task--maximized
+	to
+		left 0
+		top 0
+		width 100%
+		height 100%
+.Task--restored
+	.Task__dialog
+		animation Task--restored .4s cubic-bezier(.25,1,.5,1) forwards
+@keyframes Task--restored
+	from
+		left 0
+		top 0
+		width 100%
+		height 100%
+.Task--desktop
+	.Task__dialog
+		left 0 !important
+		top 0 !important
+		width 100% !important
+		height 100% !important
+		box-shadow none
+		animation none
+.Task--closing
+	> :not(.Task__dialog)
+		display none !important
+.Task__dialog
+	position absolute
+	display flex
+	flex-direction column
+	background #fff
+	box-shadow 0 0 0 1px #bfccd6,0 3px 8px #29374233
+	animation Task--opening .4s cubic-bezier(.25,1,.5,1)
+	pointer-events auto
+@keyframes Task--opening
+	from
+		scale .9
+		opacity 0
+.Task__header
+	margin 4px
+	display flex
+	align-items center
+.Task__title
+	height 100%
+	padding 0 8px
+	display flex
+	flex-grow 1
+	align-items center
+.Task__titleText
+	text-truncate 1
+	pointer-events none
+.Task__buttons
+	display flex
+.Task__body
+	position relative
+	min-height 0
+	flex-grow 1
+.Task__iframe
+	width 100%
+	height 100%
+	border 0
+.Task__notAcceptFirstMouse
+	position absolute
+	inset 0
+.Task__resizes
+	position absolute
+	inset -4px
+	pointer-events none
+.Task__resize
+	position absolute
+	pointer-events auto
+.Task__resize[data-x]
+	width 8px
+	height 100%
+	cursor w-resize
+.Task__resize[data-y]
+	width 100%
+	height 8px
+	cursor n-resize
+.Task__resize[data-x][data-y]
+	width 8px
+	height 8px
+	cursor nw-resize
+.Task__resize[data-x="1"]
+	right 0
+.Task__resize[data-y="1"]
+	bottom 0
+.Task__resize[data-x="1"][data-y="-1"]
+.Task__resize[data-x="-1"][data-y="1"]
+	cursor ne-resize
+
+#tooltipEl
+	max-width 400px
+	min-height 24px
+	padding 4px 8px
+	display flex
+	align-items center
+	background #293742
+	color #fff
+	z-index 10
+	&:empty
+		display none
+
+#contextMenuEl
+	z-index 10
+	> .Menu
+		box-shadow 0 3px 8px #29374233
